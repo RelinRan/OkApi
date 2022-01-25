@@ -18,7 +18,6 @@ dependencies {
 	implementation 'com.github.RelinRan:OkApi:2022.1.25.1'
 }
 ```
-
 # 初始化
 注意在Application里初始化
 ```
@@ -30,7 +29,7 @@ configure.address(Api.BETA);//设置当前环境地址
 configure.contentType(Api.JSON);//全局请求方式JSON
 ```
 # 生命周期
-在对应页面onDestory()里调用api.cancel(context);会自动取消当前页面的请求。
+在对应页面onDestroy()里调用api.cancel(context);会自动取消当前页面的请求。
 ```
 Api api = new OkApi();
 //to do get or post...
