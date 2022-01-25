@@ -29,6 +29,18 @@ configure.url(Api.ONLINE, "https://www.yiketianqi.com");//设置线上环境地�
 configure.address(Api.BETA);//设置当前环境地址
 configure.contentType(Api.JSON);//全局请求方式JSON
 ```
+# 生命周期
+在对应页面onDestory()里调用api.cancel(context);会自动取消当前页面的请求。
+```
+Api api = new OkApi();
+//to do get or post...
+
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    api.cancel(context);
+}
+```
 # 类型
 ## 初始化
 ```
@@ -36,7 +48,7 @@ Api.initialize(this).contentType(Api.FORM_DATA);
 ```
 ## 全局
 ```
-Configure.Config().contentType(Api.FORM_DATA);
+Configure.Config().contentType(Api.JSON);
 ```
 ## 单个
 ```
@@ -66,7 +78,7 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
 ```
 android:usesCleartextTraffic="true"
 ```
-# Api方法
+# Api
 
 ## GET
 ```
@@ -102,8 +114,26 @@ api.post(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
+## 实体转换
+User user = response.convert(User.class);
+```
+Api api = new OkApi();
+RequestParams params = new RequestParams();
+params.add("key","value");
+api.post(this, "/business/editShelf", params, new OnRequestListener() {
 
-## 实体JSON
+    @Override
+    public void onRequestSucceed(Request request, Response response) {
+         User user = response.convert(User.class);
+    }
+
+    @Override
+    public void onRequestFailed(Request request, Exception exception) {
+
+    }
+});
+```
+## 实体上传
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -123,12 +153,11 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-## 文件上传
+## 切换域名
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
-File file = new File("/storeage/xxxx.png")
-params.add("file",file);
+params.addHeader(Api.DOMAIN,"http://47.206.248.71:8006");
 api.get(context, "/business/editShelf", params, new OnRequestListener() {
     @Override
     public void onRequestSucceed(Request request, Response response) {
@@ -141,11 +170,12 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-## 切换域名
+## 文件上传
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
-params.addHeader(Api.DOMAIN,"http://47.206.248.71:8006");
+File file = new File("/storeage/xxxx.png")
+params.add("file",file);
 api.get(context, "/business/editShelf", params, new OnRequestListener() {
     @Override
     public void onRequestSucceed(Request request, Response response) {
