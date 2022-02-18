@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 
 /**

@@ -1,6 +1,4 @@
-package com.androidx.okapi;
-
-import com.google.gson.Gson;
+package androidx.ok.api;
 
 import okhttp3.Headers;
 import okhttp3.Protocol;
@@ -52,8 +50,7 @@ public class Response {
      * @return
      */
     public <T> T convert(Class<T> target) {
-        Gson gson = new Gson();
-        return gson.fromJson(body(), target);
+        return JSON.toObject(body(), target);
     }
 
     public String message() {

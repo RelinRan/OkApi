@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,6 +1,6 @@
 # OkApi
 Android接口联调工具
-1.内含Gson、okhttp、okio
+1.内含JSON、okhttp、okio
 2.支持Get、Post、Put、Delete、Patch
 # Maven
 1.build.grade
@@ -15,8 +15,18 @@ allprojects {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:OkApi:2022.1.25.1'
+	implementation 'com.github.RelinRan:OkApi:2022.2.18.1'
 }
+```
+# 权限
+1.网络权限
+```
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
+2.非https请求，AndroidManifest.xml中application标签设置属性：
+```
+android:usesCleartextTraffic="true"
 ```
 # 初始化
 注意在Application里初始化
@@ -40,46 +50,28 @@ protected void onDestroy() {
     api.cancel(context);
 }
 ```
-# 类型
-## 初始化
+# 表单
 ```
+//方法一
 Api.initialize(this).contentType(Api.FORM_DATA);
-```
-## 全局
-```
-Configure.Config().contentType(Api.JSON);
-```
-## 单个
-```
-Api api = new OkApi();
+//方法二
+Configure.Config().contentType(Api.FORM_DATA);
+//方法三
 RequestParams params = new RequestParams();
 params.addHeader(Header.CONTENT_TYPE,Api.FORM_DATA);
-api.get(context, "/business/editShelf", params, new OnRequestListener() {
-    @Override
-    public void onRequestSucceed(Request request, Response response) {
-           ApiLog.i("Api", response.body());
-    }
-
-    @Override
-    public void onRequestFailed(Request request, Exception exception) {
-
-    }
-});
 ```
-
-# 权限
-1.网络权限
+# JSON
+JSON工具，请点击[Gitee-JSON](https://gitee.com/relin/JSON) 或 [GitHub-JSON](https://github.com/RelinRan/JSON)
 ```
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+//方法一
+Api.initialize(this).contentType(Api.JSON);
+//方法二
+Configure.Config().contentType(Api.JSON);
+//方法三
+RequestParams params = new RequestParams();
+params.addHeader(Header.CONTENT_TYPE,Api.JSON);
 ```
-2.非https请求，AndroidManifest.xml中application标签设置属性：
-```
-android:usesCleartextTraffic="true"
-```
-# Api
-
-## GET
+# GET
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -96,7 +88,7 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-## POST
+# POST
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -113,26 +105,15 @@ api.post(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-## 实体转换
-User user = response.convert(User.class);
+# 实体转换
+JSON工具，请点击[Gitee-JSON](https://gitee.com/relin/JSON) 或 [GitHub-JSON](https://github.com/RelinRan/JSON)
 ```
-Api api = new OkApi();
-RequestParams params = new RequestParams();
-params.add("key","value");
-api.post(this, "/business/editShelf", params, new OnRequestListener() {
-
-    @Override
-    public void onRequestSucceed(Request request, Response response) {
-         User user = response.convert(User.class);
-    }
-
-    @Override
-    public void onRequestFailed(Request request, Exception exception) {
-
-    }
-});
+@Override
+public void onRequestSucceed(Request request, Response response) {
+     User user = response.convert(User.class);
+}
 ```
-## 实体上传
+# 实体上传
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -152,7 +133,7 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-## 切换域名
+# 切换域名
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -169,13 +150,14 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-## 文件上传
+# 文件上传
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
 File file = new File("/storeage/xxxx.png")
 params.add("file",file);
-api.get(context, "/business/editShelf", params, new OnRequestListener() {
+params.addHeader(Header.CONTENT_TYPE,Api.FORM_DATA);
+api.post(context, "/business/editShelf", params, new OnRequestListener() {
     @Override
     public void onRequestSucceed(Request request, Response response) {
            ApiLog.i("Api", response.body());
@@ -187,7 +169,31 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-## 文件下载
+# 上传进度
+```
+Api api = new OkApi();
+RequestParams params = new RequestParams();
+params.add("file",file);
+params.addHeader(Header.CONTENT_TYPE,Api.FORM_DATA);
+api.upload(context, "/upload/file", null, new OnBufferedSinkListener() {
+    @Override
+    public void onBufferedSinkWrite(long contentLength, long bytes) {
+        // TODO:显示文件上传进度
+    }
+}, new OnRequestListener() {
+    
+    @Override
+    public void onRequestSucceed(Request request, Response response) {
+        // TODO:服务器请求成功
+    }
+
+    @Override
+    public void onRequestFailed(Request request, Exception exception) {
+        // TODO:服务器请求失败
+    }
+});
+```
+# 文件下载
 1.在res/新建xml文件夹，在xml文件夹新建path.xml
 ```
 <?xml version="1.0" encoding="utf-8"?>
@@ -247,4 +253,5 @@ builder.listener(new OnDownloadListener() {
 builder.breakpoint(true);
 builder.build();
 ```
+
 

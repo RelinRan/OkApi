@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;

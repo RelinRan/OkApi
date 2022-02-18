@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 /**
  * Json参数反转义处理

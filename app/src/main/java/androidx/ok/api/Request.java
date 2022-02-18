@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 import okhttp3.Headers;
 import okhttp3.HttpUrl;

@@ -1,10 +1,8 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,7 +60,7 @@ public class OkCookieJar implements Serializable, CookieJar {
             okCookie.setPersistent(cookie.persistent());
             cookies.add(okCookie);
         }
-        String cookieJson = new Gson().toJson(cookies);
+        String cookieJson = JSON.toJson(cookies);
         setCache(context, PREFIX + httpUrl.host(), cookieJson);
     }
 
@@ -75,8 +73,7 @@ public class OkCookieJar implements Serializable, CookieJar {
     private List<Cookie> load(HttpUrl httpUrl) {
         String requestHost = httpUrl.host();
         String cookieJson = getCache(context, PREFIX + requestHost, "[]");
-        List<OkCookie> okCookies = new Gson().fromJson(cookieJson, new TypeToken<List<OkCookie>>() {
-        }.getType());
+        List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
         List<Cookie> cookies = new ArrayList<>();
         int okCookieSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookieSize; i++) {
@@ -116,8 +113,7 @@ public class OkCookieJar implements Serializable, CookieJar {
      */
     public static List<Cookie> getCookies(Context context, String hostKey) {
         String cookieJson = getCache(context, PREFIX + hostKey, "[]");
-        List<OkCookie> okCookies = new Gson().fromJson(cookieJson, new TypeToken<List<OkCookie>>() {
-        }.getType());
+        List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
         List<Cookie> cookies = new ArrayList<>();
         int okCookiesSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookiesSize; i++) {

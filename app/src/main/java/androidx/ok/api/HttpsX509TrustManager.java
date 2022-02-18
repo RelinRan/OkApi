@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 import android.content.Context;
 
@@ -104,6 +104,17 @@ public interface Api {
      * @param listener 请求监听
      */
     void patch(Context context, String path, RequestParams params, OnRequestListener listener);
+
+    /**
+     * 文件上传
+     *
+     * @param context         上下文
+     * @param path            路径
+     * @param params          参数
+     * @param sinkListener    文件写入监听
+     * @param requestListener 请求监听
+     */
+    void upload(Context context, String path, RequestParams params, OnBufferedSinkListener sinkListener, OnRequestListener requestListener);
 
     /**
      * 取消请求

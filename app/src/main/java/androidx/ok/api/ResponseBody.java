@@ -1,4 +1,4 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 
 /**
@@ -19,14 +19,16 @@ public class ResponseBody {
      */
     private Exception exception;
     /**
-     * 结果监听
+     * 上传监听
      */
-    private OnRequestListener listener;
+    private OnRequestListener onRequestListener;
+    /**
+     * 上传写入监听
+     */
+    private OnBufferedSinkListener onBufferedSinkListener;
 
     /**
-     * 获取请求
-     *
-     * @return
+     * @return 请求
      */
     public Request getRequest() {
         return request;
@@ -42,8 +44,7 @@ public class ResponseBody {
     }
 
     /**
-     * 获取响应内容
-     * @return
+     * @return 响应内容
      */
     public Response getResponse() {
         return response;
@@ -58,9 +59,7 @@ public class ResponseBody {
     }
 
     /**
-     * 获取异常
-     *
-     * @return
+     * @return 异常
      */
     public Exception getException() {
         return exception;
@@ -76,21 +75,35 @@ public class ResponseBody {
     }
 
     /**
-     * 获取监听
-     *
-     * @return
+     * @return 请求监听
      */
-    public OnRequestListener getListener() {
-        return listener;
+    public OnRequestListener getRequestListener() {
+        return onRequestListener;
     }
 
     /**
      * 设置监听
      *
-     * @param listener
+     * @param onRequestListener
      */
-    public void setListener(OnRequestListener listener) {
-        this.listener = listener;
+    public void setOnRequestListener(OnRequestListener onRequestListener) {
+        this.onRequestListener = onRequestListener;
     }
+
+    /**
+     * @return 文件上传写入监听
+     */
+    public OnBufferedSinkListener getBufferedSinkListener() {
+        return onBufferedSinkListener;
+    }
+
+    /**
+     * 设置写入监听
+     * @param onBufferedSinkListener 文件上传写入监听
+     */
+    public void setBufferedSinkListener(OnBufferedSinkListener onBufferedSinkListener) {
+        this.onBufferedSinkListener = onBufferedSinkListener;
+    }
+
 
 }

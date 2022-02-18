@@ -1,11 +1,9 @@
-package com.androidx.okapi;
+package androidx.ok.api;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.text.TextUtils;
-
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.net.FileNameMap;
@@ -50,12 +48,16 @@ public final class OkApi implements Api {
      */
     private final int PATCH = 5;
     /**
+     * 上传文件请求
+     */
+    private final int UPLOAD = 6;
+    /**
      * 请求Handler处理
      */
-    private ApiHandler handler;
+    private ApiMessenger messenger;
 
     public OkApi() {
-        handler = new ApiHandler();
+        messenger = new ApiMessenger();
     }
 
     @Override
@@ -81,6 +83,11 @@ public final class OkApi implements Api {
     @Override
     public void patch(Context context, String path, RequestParams params, OnRequestListener listener) {
         request(context, PATCH, path, params, listener);
+    }
+
+    @Override
+    public void upload(Context context, String path, RequestParams params, OnBufferedSinkListener sinkListener, OnRequestListener requestListener) {
+        upload(context, UPLOAD, path, params, sinkListener, requestListener);
     }
 
     @Override
@@ -213,8 +220,8 @@ public final class OkApi implements Api {
     /**
      * 获取带有参数的完整路径
      *
-     * @param path    路径
-     * @param params  参数
+     * @param path   路径
+     * @param params 参数
      * @return
      */
     protected String getParamsUrl(String path, RequestParams params) {
@@ -270,17 +277,16 @@ public final class OkApi implements Api {
     }
 
     /**
-     * 多表单请求
+     * 创建请求
      *
-     * @param context  上下文
-     * @param method   方法
-     * @param params   参数
-     * @param path     路径
-     * @param listener 监听
+     * @param context 上下文
+     * @param method  方法
+     * @param path    路径
+     * @param params  参数
+     * @param body    请求体
+     * @return
      */
-    protected void multipartBodyRequest(Context context, int method, RequestParams params, String path, OnRequestListener listener) {
-        //生成请求体
-        RequestBody body = createMultipartBody(params);
+    protected Call createCall(Context context, int method, String path, RequestParams params, RequestBody body) {
         okhttp3.Request.Builder builder = new okhttp3.Request.Builder();
         //请求路径
         String url = getUrl(path);
@@ -292,8 +298,55 @@ public final class OkApi implements Api {
         //传参数、文件或者混合
         builder.post(body);
         okhttp3.Request request = createRequest(context, method, url, builder, body);
-        Call call = getClient().newCall(request);
-        call.enqueue(new OkCallback(handler, listener));
+        return getClient().newCall(request);
+    }
+
+    /**
+     * 多表单请求
+     *
+     * @param context  上下文
+     * @param method   方法
+     * @param params   参数
+     * @param path     路径
+     * @param listener 监听
+     */
+    protected void multipartBodyRequest(Context context, int method, RequestParams params, String path, OnRequestListener listener) {
+        RequestBody body = createMultipartBody(params);
+        Call call = createCall(context, method, path, params, body);
+        call.enqueue(new OkCallback(messenger, listener));
+    }
+
+    /**
+     * 多表单请求
+     *
+     * @param context         上下文
+     * @param method          方法
+     * @param params          参数
+     * @param path            路径
+     * @param sinkListener    写入监听
+     * @param requestListener 请求监听
+     */
+    protected void multipartBodyUpload(Context context, int method, RequestParams params, String path,
+                                       OnBufferedSinkListener sinkListener, OnRequestListener requestListener) {
+        RequestBody body = new SinkBody(createMultipartBody(params), messenger, sinkListener);
+        Call call = createCall(context, method, path, params, body);
+        call.enqueue(new OkCallback(messenger, requestListener));
+    }
+
+    /**
+     * @param params 参数
+     * @return 单内容请求(JSON | BINARY)体
+     */
+    protected RequestBody createBinaryRequestBody(RequestParams params) {
+        String contentType = params.header().get(Header.CONTENT_TYPE);
+        MediaType mediaType = MediaType.parse(contentType);
+        String bodyString = params.body();
+        String data = androidx.ok.api.JSON.toJson(params.data());
+        String content = TextUtils.isEmpty(bodyString) ? data : bodyString;
+        if (contentType.equals(Api.JSON)) {
+            content = Configure.Config().escapeJar().escape(content);
+        }
+        return RequestBody.create(mediaType, content);
     }
 
     /**
@@ -305,26 +358,28 @@ public final class OkApi implements Api {
      * @param path     路径
      * @param listener 监听
      */
-    protected void singleBodyRequest(Context context, int method, RequestParams params, String path, OnRequestListener listener) {
-        String contentType = params.header().get(Header.CONTENT_TYPE);
-        MediaType mediaType = MediaType.parse(contentType);
-        String bodyString = params.body();
-        String data = new Gson().toJson(params.data());
-        String content = TextUtils.isEmpty(bodyString) ? data : bodyString;
-        //字符转义处理
-        if (contentType.equals(Api.JSON)) {
-            content = Configure.Config().escapeJar().escape(content);
-        }
-        RequestBody body = RequestBody.create(mediaType, content);
-        okhttp3.Request.Builder builder = new okhttp3.Request.Builder();
-        //添加Header
-        addHeaders(params, builder);
-        //缓存控制
-        builder.cacheControl(Configure.Config().cacheControl());
-        String url = getUrl(path);
-        okhttp3.Request request = createRequest(context, method, url, builder, body);
-        Call call = getClient().newCall(request);
-        call.enqueue(new OkCallback(handler, listener));
+    protected void binaryBodyRequest(Context context, int method, RequestParams params, String path, OnRequestListener listener) {
+        RequestBody body = createBinaryRequestBody(params);
+        Call call = createCall(context, method, path, params, body);
+        call.enqueue(new OkCallback(messenger, listener));
+    }
+
+    /**
+     * 单内容请求(JSON|BINARY)
+     *
+     * @param context         上下文
+     * @param method          方法
+     * @param params          参数
+     * @param path            路径
+     * @param sinkListener    写入监听
+     * @param requestListener 请求监听
+     */
+    protected void binaryBodyUpload(Context context, int method, RequestParams params, String path,
+                                    OnBufferedSinkListener sinkListener, OnRequestListener requestListener) {
+        RequestBody requestBody = createBinaryRequestBody(params);
+        SinkBody body = new SinkBody(requestBody, messenger, sinkListener);
+        Call call = createCall(context, method, path, params, body);
+        call.enqueue(new OkCallback(messenger, requestListener));
     }
 
     /**
@@ -346,7 +401,7 @@ public final class OkApi implements Api {
         okhttp3.Request request = createRequest(context, GET, url, builder, null);
         //请求加入调度
         Call call = getClient().newCall(request);
-        call.enqueue(new OkCallback(handler, listener));
+        call.enqueue(new OkCallback(messenger, listener));
     }
 
     /**
@@ -368,8 +423,29 @@ public final class OkApi implements Api {
             if (contentType.equals(Api.FORM_DATA)) {
                 multipartBodyRequest(context, method, params, path, listener);
             } else {
-                singleBodyRequest(context, method, params, path, listener);
+                binaryBodyRequest(context, method, params, path, listener);
             }
+        }
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param method          方法
+     * @param path            接口
+     * @param params          参数
+     * @param sinkListener    写入监听
+     * @param requestListener 请求监听
+     */
+    public void upload(Context context, int method, String path, RequestParams params, OnBufferedSinkListener sinkListener, OnRequestListener requestListener) {
+        if (Configure.Config() == null) {
+            return;
+        }
+        String contentType = params.header().get(Header.CONTENT_TYPE);
+        if (contentType.equals(Api.FORM_DATA)) {
+            multipartBodyUpload(context, method, params, path, sinkListener, requestListener);
+        } else {
+            binaryBodyUpload(context, method, params, path, sinkListener, requestListener);
         }
     }
 
