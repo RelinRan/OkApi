@@ -15,7 +15,7 @@ allprojects {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:OkApi:2022.2.18.1'
+	implementation 'com.github.RelinRan:OkApi:2022.2.20.1'
 }
 ```
 # 权限
@@ -37,6 +37,7 @@ configure.url(Api.BETA, "http://47.108.248.71:8109");//设置测试环境地址
 configure.url(Api.ONLINE, "https://www.yiketianqi.com");//设置线上环境地址
 configure.address(Api.BETA);//设置当前环境地址
 configure.contentType(Api.JSON);//全局请求方式JSON
+configure.addInterceptor(xxx);//添加拦截器
 ```
 # 生命周期
 在对应页面onDestroy()里调用api.cancel(context);会自动取消当前页面的请求。
@@ -253,5 +254,48 @@ builder.listener(new OnDownloadListener() {
 builder.breakpoint(true);
 builder.build();
 ```
-
+# RSA
+## 初始化
+以下设置会有默认值
+```
+//公钥字符串
+RSA.PUBLIC_KEY = "xxx";
+//私钥字符串
+RSA.PRIVATE_KEY = "xxx";
+//签名算法
+RSA.SIGNATURE_ALGORITHM = "SHA1withRSA";
+//加密算法
+RSA.ENCRYPT_ALGORITHM = "RSA/ECB/PKCS1Padding";
+//解密算法
+RSA.DECRYPT_ALGORITHM = "RSA/ECB/PKCS1Padding";
+```
+## 加签
+```
+String sign(String param);
+```
+## 验签
+```
+boolean verifySign(String param, String sign);
+```
+## 加密
+```
+String encrypt(String param);
+```
+## 解密
+```
+String decrypt(String param);
+```
+# AES
+## 初始化
+```
+AES.SECRET_KEY = "xxx";
+```
+## 加密
+```
+String encrypt(String content);
+```
+## 解密
+```
+String decrypt(String content);
+```
 

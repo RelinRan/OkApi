@@ -420,7 +420,7 @@ public class Configure {
      *
      * @param interceptor
      */
-    public Configure interceptor(Interceptor interceptor) {
+    public Configure addInterceptor(Interceptor interceptor) {
         interceptors.add(interceptor);
         return this;
     }
