@@ -329,6 +329,9 @@ public class JSON {
                             map.put(name, val);
                         }
                         field.set(clazzBean, map);
+                    }else if (Object.class.isAssignableFrom(fieldType)){
+                        //Object
+                        field.set(clazzBean, value);
                     } else {
                         field.set(clazzBean, toObject(valueString, fieldType));
                     }
