@@ -1,5 +1,9 @@
 package androidx.ok.api;
 
+import android.util.Log;
+
+import org.json.JSONException;
+
 import okhttp3.Headers;
 import okhttp3.Protocol;
 
@@ -43,6 +47,18 @@ public class Response {
     }
 
     /**
+     * @return 返回内容是否是JSON
+     */
+    public boolean isJsonBody() {
+        if (body == null) {
+            return false;
+        }
+        boolean isArray = body.startsWith("[") && body.endsWith("]");
+        boolean isObject = body.startsWith("{") && body.endsWith("}");
+        return isArray || isObject;
+    }
+
+    /**
      * 转换为实体
      *
      * @param target 实体类
@@ -50,7 +66,12 @@ public class Response {
      * @return
      */
     public <T> T convert(Class<T> target) {
-        return JSON.toObject(body(), target);
+        if (isJsonBody()) {
+            return JSON.toObject(body(), target);
+        } else {
+            Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
+        }
+        return null;
     }
 
     public String message() {
