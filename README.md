@@ -16,7 +16,7 @@ repositories {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:OkApi:2022.2.20.1'
+	implementation 'com.github.RelinRan:OkApi:2022.2.22.1'
 }
 ```
 # 权限
