@@ -4,6 +4,7 @@ Android接口联调工具
 2.支持Get、Post、Put、Delete、Patch
 3.文件上传进度
 4.RSA、AES
+# [OkApi.aar](https://github.com/RelinRan/OkApi/blob/master/OkApi.aar)
 # Maven
 1.build.grade
 ```
@@ -122,7 +123,7 @@ Api api = new OkApi();
 RequestParams params = new RequestParams();
 User user = new User();
 user.setName("OkApi");
-String json = new Gson().toJson(user);
+String json = JSON.toJson(user);
 params.add(json);
 api.get(context, "/business/editShelf", params, new OnRequestListener() {
     @Override
@@ -178,7 +179,7 @@ Api api = new OkApi();
 RequestParams params = new RequestParams();
 params.add("file",file);
 params.addHeader(Header.CONTENT_TYPE,Api.FORM_DATA);
-api.upload(context, "/upload/file", null, new OnBufferedSinkListener() {
+api.upload(context, "/upload/file", params, new OnBufferedSinkListener() {
     @Override
     public void onBufferedSinkWrite(long contentLength, long bytes) {
         // TODO:显示文件上传进度
