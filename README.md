@@ -6,13 +6,11 @@ Android接口联调工具
 4.RSA、AES
 # [OkApi.aar](https://github.com/RelinRan/OkApi/blob/master/OkApi.aar)
 # Maven
-1.build.grade
+1.build.grade | setting.grade
 ```
-allprojects {
-    repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+repositories {
+	...
+	maven { url 'https://jitpack.io' }
 }
 ```
 2./app/build.grade
