@@ -20,6 +20,10 @@ public interface Api {
      */
     int PRODUCTION = -3;
     /**
+     * 请求标识
+     */
+    String REQUEST_TAG = "Request-Tag";
+    /**
      * 网络路径
      */
     String DOMAIN = "Cross-Domain";
@@ -45,10 +49,8 @@ public interface Api {
     String XML = "application/xml; charset=utf-8";
 
     /**
-     * 初始化请求配置
-     *
      * @param context Application的上下文
-     * @return
+     * @return 初始化配置
      */
     static Configure initialize(Context context) {
         return Configure.initialize(context);
@@ -122,5 +124,13 @@ public interface Api {
      * @param context 上下文
      */
     void cancel(Context context);
+
+
+    /**
+     * 取消请求
+     *
+     * @param tag 标识
+     */
+    void cancel(String tag);
 
 }

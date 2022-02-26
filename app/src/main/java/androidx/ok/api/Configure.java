@@ -21,6 +21,7 @@ import okhttp3.ConnectionPool;
 import okhttp3.CookieJar;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 
 /**
@@ -41,6 +42,10 @@ public class Configure {
      * 上下文对象
      */
     private Context context;
+    /**
+     * 客户端单列模式
+     */
+    private boolean singleton;
     /**
      * 当前服务器地址
      */
@@ -122,6 +127,8 @@ public class Configure {
      */
     private CacheControl cacheControl;
 
+    private OkHttpClient client;
+
     /**
      * 构造参数
      *
@@ -138,8 +145,9 @@ public class Configure {
      * @param context 上下文
      */
     protected void initialConfiguration(Context context) {
-        ApiLog.i(TAG,"initialConfiguration");
+        ApiLog.i(TAG, "initialConfiguration");
         urls = new HashMap<>();
+        singleton = false;
         protocols = Collections.singletonList(Protocol.HTTP_1_1);
         connectionPool = new ConnectionPool(maxIdleConnections, keepAliveDuration, TimeUnit.SECONDS);
         dispatcher = new Dispatcher();
@@ -190,6 +198,37 @@ public class Configure {
      */
     public Context getContext() {
         return context;
+    }
+
+    /**
+     * 设置客户端是否单例模式
+     *
+     * @param isSingle 否单例模式
+     */
+    public void singleton(boolean isSingle) {
+        this.singleton = isSingle;
+    }
+
+    /**
+     * @return 客服端是否单例模式
+     */
+    public boolean isSingleton() {
+        return singleton;
+    }
+
+    /**
+     * 设置单例客户端
+     * @param client 客户端
+     */
+    public void setHttpClient(OkHttpClient client) {
+        this.client = client;
+    }
+
+    /**
+     * @return 单例客户端
+     */
+    public OkHttpClient getHttpClient() {
+        return client;
     }
 
     /**

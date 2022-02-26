@@ -92,8 +92,12 @@ public final class OkApi implements Api {
 
     @Override
     public void cancel(Context context) {
+        cancel(getTag(context, null));
+    }
+
+    @Override
+    public void cancel(String tag) {
         List<Call> calls = getClient().dispatcher().runningCalls();
-        String tag = getTag(context);
         for (Call call : calls) {
             if (call.request().tag() != null) {
                 String requestTag = (String) call.request().tag();
@@ -105,12 +109,13 @@ public final class OkApi implements Api {
     }
 
     /**
-     * 获取客户端
-     *
-     * @return
+     * @return 客户端
      */
     public OkHttpClient getClient() {
         Configure config = Configure.Config();
+        if (config.isSingleton() && config.getHttpClient() != null) {
+            return config.getHttpClient();
+        }
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.protocols(config.protocols());
         builder.connectTimeout(config.connectTimeout(), TimeUnit.SECONDS);
@@ -127,7 +132,11 @@ public final class OkApi implements Api {
         builder.retryOnConnectionFailure(config.isRetryOnConnectionFailure());
         builder.sslSocketFactory(config.socketFactory(), Platform.get().trustManager(config.socketFactory()));
         builder.hostnameVerifier(config.hostnameVerifier());
-        return builder.build();
+        OkHttpClient client = builder.build();
+        if (config.isSingleton()) {
+            config.setHttpClient(client);
+        }
+        return client;
     }
 
     /**
@@ -189,9 +198,13 @@ public final class OkApi implements Api {
      * 获取标识
      *
      * @param context 上下文
+     * @param params  参数
      * @return
      */
-    protected String getTag(Context context) {
+    protected String getTag(Context context, RequestParams params) {
+        if (params != null && params.header() != null && params.header().containsKey(Api.REQUEST_TAG)) {
+            return params.header().get(Api.REQUEST_TAG);
+        }
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
             return activity.getClass().getSimpleName();
@@ -253,10 +266,11 @@ public final class OkApi implements Api {
      * @param method      方法
      * @param builder     请求构建者
      * @param requestBody 请求内容
+     * @param params      请求参数
      * @return
      */
-    protected okhttp3.Request createRequest(Context context, int method, String url, okhttp3.Request.Builder builder, RequestBody requestBody) {
-        String tag = getTag(context);
+    protected okhttp3.Request createRequest(Context context, int method, String url, okhttp3.Request.Builder builder, RequestBody requestBody, RequestParams params) {
+        String tag = getTag(context, params);
         okhttp3.Request request = null;
         if (method == GET) {
             request = builder.url(url).tag(tag).build();
@@ -297,7 +311,7 @@ public final class OkApi implements Api {
         builder.cacheControl(Configure.Config().cacheControl());
         //传参数、文件或者混合
         builder.post(body);
-        okhttp3.Request request = createRequest(context, method, url, builder, body);
+        okhttp3.Request request = createRequest(context, method, url, builder, body, params);
         return getClient().newCall(request);
     }
 
@@ -398,7 +412,7 @@ public final class OkApi implements Api {
         //缓存控制
         builder.cacheControl(Configure.Config().cacheControl());
         String url = getParamsUrl(path, params);
-        okhttp3.Request request = createRequest(context, GET, url, builder, null);
+        okhttp3.Request request = createRequest(context, GET, url, builder, null, params);
         //请求加入调度
         Call call = getClient().newCall(request);
         call.enqueue(new OkCallback(messenger, listener));

@@ -16,7 +16,7 @@ repositories {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:OkApi:2022.2.22.1'
+	implementation 'com.github.RelinRan:OkApi:2022.2.26.1'
 }
 ```
 # 权限
@@ -39,17 +39,32 @@ configure.url(Api.ONLINE, "https://www.yiketianqi.com");//设置线上环境地�
 configure.address(Api.BETA);//设置当前环境地址
 configure.contentType(Api.JSON);//全局请求方式JSON
 configure.addInterceptor(xxx);//添加拦截器
+configure.singleton(false);//客户端单例模式.默认false,考虑到一个页面多个接口同时异步请求情况。
 ```
 # 生命周期
-在对应页面onDestroy()里调用api.cancel(context);会自动取消当前页面的请求。
+默认页面标识
 ```
 Api api = new OkApi();
-//to do get or post...
+RequestParams params = new RequestParams();
+api.get(context, "/business/editShelf", params,null);
 
 @Override
 protected void onDestroy() {
     super.onDestroy();
     api.cancel(context);
+}
+```
+自定义标识
+```
+Api api = new OkApi();
+RequestParams params = new RequestParams();
+params.add(Api.REQUEST_TAG,"tag-1");
+api.get(context, "/business/editShelf", params,null);
+
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    api.cancel("tag-1");
 }
 ```
 # 表单
