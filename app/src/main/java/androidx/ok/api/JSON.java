@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -329,9 +328,15 @@ public class JSON {
                             map.put(name, val);
                         }
                         field.set(clazzBean, map);
+                    } else if (JSONArray.class.isAssignableFrom(fieldType)){
+                        //JSONArray
+                        field.set(clazzBean, toCollection(valueString, fieldType));
+                    }  else if (JSONObject.class.isAssignableFrom(fieldType)){
+                        //JSONObject
+                        field.set(clazzBean, toObject(valueString, fieldType));
                     }else if (Object.class.isAssignableFrom(fieldType)){
                         //Object
-                        field.set(clazzBean, value);
+                        field.set(clazzBean,toObject(valueString, fieldType));
                     } else {
                         field.set(clazzBean, toObject(valueString, fieldType));
                     }

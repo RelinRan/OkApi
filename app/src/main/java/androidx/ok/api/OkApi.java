@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.net.FileNameMap;

@@ -142,9 +142,7 @@ public class RequestParams {
      * @param value
      */
     public void addHeader(String key, String value) {
-        if (header == null) {
-            header = new TreeMap<>();
-        }
+        header = header();
         if (value == null) {
             return;
         }
@@ -177,9 +175,9 @@ public class RequestParams {
     public TreeMap<String, String> header() {
         if (header == null) {
             header = new TreeMap<>();
+            header.put(Header.USER_AGENT, "Android");
+            header.put(Header.CONTENT_TYPE, Configure.Config().contentType());
         }
-        header.put(Header.USER_AGENT, "Android");
-        header.put(Header.CONTENT_TYPE, Configure.Config().contentType());
         return header;
     }
 
