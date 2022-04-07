@@ -2,6 +2,9 @@ package androidx.ok.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.util.Log;
 
 
 import java.io.Serializable;
@@ -156,8 +159,28 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @return
      */
     protected static SharedPreferences getSharedPreferences(Context context) {
+        if (context == null) {
+            return null;
+        }
         String PACKAGE_NAME = context.getApplicationContext().getPackageName().replace(".", "_").toUpperCase();
-        return context.getSharedPreferences(PACKAGE_NAME + "_COOKIE", Context.MODE_PRIVATE);
+        String name = PACKAGE_NAME +"_"+ getVersionCode(context) + PREFIX;
+        return context.getSharedPreferences(name, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * @param context 上下文
+     * @return 版本号
+     */
+    public static int getVersionCode(Context context) {
+        int versionCode = 1;
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versionCode = pi.versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return versionCode;
     }
 
     /**
