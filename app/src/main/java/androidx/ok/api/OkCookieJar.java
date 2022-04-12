@@ -163,7 +163,7 @@ public class OkCookieJar implements Serializable, CookieJar {
             return null;
         }
         String PACKAGE_NAME = context.getApplicationContext().getPackageName().replace(".", "_").toUpperCase();
-        String name = PACKAGE_NAME +"_"+ getVersionCode(context) + PREFIX;
+        String name = PACKAGE_NAME +"_"+ getVersionCode(context.getApplicationContext()) + PREFIX;
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 

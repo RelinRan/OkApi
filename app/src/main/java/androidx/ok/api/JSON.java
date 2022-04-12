@@ -609,7 +609,7 @@ public class JSON {
             for (int i = 0; i < count; i++) {
                 Object item = list.get(i);
                 try {
-                    if (item != null && isPrimitive(item.getClass())) {
+                    if (isPrimitive(item==null?null:item.getClass())) {
                         primitiveArray.add(item);
                     } else {
                         jsonArray.put(new JSONObject(toJson(item)));
