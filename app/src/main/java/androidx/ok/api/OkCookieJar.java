@@ -104,6 +104,9 @@ public class OkCookieJar implements Serializable, CookieJar {
         if (cookieSize == 0) {
             save(httpUrl, cookies);
         }
+        if (cookieSize > 10) {
+            cookies = cookies.subList(0, 10);
+        }
         return cookies;
     }
 
@@ -163,7 +166,7 @@ public class OkCookieJar implements Serializable, CookieJar {
             return null;
         }
         String PACKAGE_NAME = context.getApplicationContext().getPackageName().replace(".", "_").toUpperCase();
-        String name = PACKAGE_NAME +"_"+ getVersionCode(context.getApplicationContext()) + PREFIX;
+        String name = PACKAGE_NAME + "_" + getVersionCode(context.getApplicationContext()) + PREFIX;
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
