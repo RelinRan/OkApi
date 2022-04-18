@@ -2,7 +2,9 @@ package androidx.ok.api;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import okhttp3.Headers;
 import okhttp3.Protocol;
@@ -50,12 +52,36 @@ public class Response {
      * @return 返回内容是否是JSON
      */
     public boolean isJsonBody() {
-        if (body == null) {
+        if (body == null || body.length() == 0) {
             return false;
         }
-        boolean isArray = body.startsWith("[") && body.endsWith("]");
-        boolean isObject = body.startsWith("{") && body.endsWith("}");
-        return isArray || isObject;
+        return isJsonObject(body) || isJsonArray(body);
+    }
+
+    /**
+     * @param body 内容
+     * @return 是否是JSONObject
+     */
+    public boolean isJsonObject(String body) {
+        try {
+            JSONObject jsonObject = new JSONObject(body);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param body 内容
+     * @return 是否是JSONArray
+     */
+    public boolean isJsonArray(String body) {
+        try {
+            JSONArray jsonArray = new JSONArray(body);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
