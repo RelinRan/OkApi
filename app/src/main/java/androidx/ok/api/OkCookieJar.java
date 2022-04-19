@@ -67,9 +67,11 @@ public class OkCookieJar implements Serializable, CookieJar {
             okCookie.setPersistent(cookie.persistent());
             cookies.add(okCookie);
         }
-        String cookieJson = JSON.toJson(cookies);
-        Log.i(OkCookieJar.class.getSimpleName(),"->save cookieJson = "+cookieJson);
-        setCache(context, PREFIX + httpUrl.host(), cookieJson);
+        if (cookies.size() > 0) {
+            String cookieJson = JSON.toJson(cookies);
+            Log.i(OkCookieJar.class.getSimpleName(),  cookieJson);
+            setCache(context, PREFIX + httpUrl.host(), cookieJson);
+        }
     }
 
     /**
@@ -175,6 +177,15 @@ public class OkCookieJar implements Serializable, CookieJar {
      */
     public static void remove(Context context, String host) {
         setCache(context, PREFIX + host, "[]");
+    }
+
+    /**
+     * 清空Cookie缓存
+     *
+     * @param context 上下文
+     */
+    public static void clear(Context context) {
+        getSharedPreferences(context).edit().clear().commit();
     }
 
     /**
