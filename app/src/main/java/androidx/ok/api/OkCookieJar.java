@@ -47,6 +47,10 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @param list    cookie数据
      */
     private void save(HttpUrl httpUrl, List<Cookie> list) {
+        if (hasCookie(httpUrl)) {
+            return;
+        }
+        cookies = new ArrayList<>();
         int size = list == null ? 0 : list.size();
         for (int i = 0; i < size; i++) {
             Cookie cookie = list.get(i);
@@ -64,7 +68,28 @@ public class OkCookieJar implements Serializable, CookieJar {
             cookies.add(okCookie);
         }
         String cookieJson = JSON.toJson(cookies);
+        Log.i(OkCookieJar.class.getSimpleName(),"->save cookieJson = "+cookieJson);
         setCache(context, PREFIX + httpUrl.host(), cookieJson);
+    }
+
+    /**
+     * @param httpUrl
+     * @return 是否存在Cookie
+     */
+    private boolean hasCookie(HttpUrl httpUrl) {
+        String requestHost = httpUrl.host();
+        String cookieJson = getCache(context, PREFIX + requestHost, "[]");
+        List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
+        int okCookieSize = okCookies == null ? 0 : okCookies.size();
+        for (int i = 0; i < okCookieSize; i++) {
+            OkCookie okCookie = okCookies.get(i);
+            String host = okCookie.getHost();
+            long expiresAt = okCookie.getExpiresAt();
+            if (expiresAt > System.currentTimeMillis() && requestHost.equals(host)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -103,9 +128,6 @@ public class OkCookieJar implements Serializable, CookieJar {
         int cookieSize = cookies == null ? 0 : cookies.size();
         if (cookieSize == 0) {
             save(httpUrl, cookies);
-        }
-        if (cookieSize > 10) {
-            cookies = cookies.subList(0, 10);
         }
         return cookies;
     }
