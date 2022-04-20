@@ -6,9 +6,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Cookie;
@@ -23,9 +25,11 @@ public class OkCookieJar implements Serializable, CookieJar {
 
     public static final String PREFIX = "OK_";
     private Context context;
+    private SimpleDateFormat dateFormat;
 
     public OkCookieJar(Context context) {
         this.context = context;
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
     private List<OkCookie> cookies = new ArrayList<>();
@@ -52,26 +56,36 @@ public class OkCookieJar implements Serializable, CookieJar {
         }
         cookies = new ArrayList<>();
         int size = list == null ? 0 : list.size();
-        for (int i = 0; i < size; i++) {
-            Cookie cookie = list.get(i);
-            OkCookie okCookie = new OkCookie();
-            okCookie.setHost(httpUrl.host());
-            okCookie.setName(cookie.name());
-            okCookie.setValue(cookie.value());
-            okCookie.setExpiresAt(cookie.expiresAt());
-            okCookie.setDomain(cookie.domain());
-            okCookie.setPath(cookie.path());
-            okCookie.setSecure(cookie.secure());
-            okCookie.setHttpOnly(cookie.httpOnly());
-            okCookie.setHostOnly(cookie.hostOnly());
-            okCookie.setPersistent(cookie.persistent());
-            cookies.add(okCookie);
-        }
-        if (cookies.size() > 0) {
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                Cookie cookie = list.get(i);
+                OkCookie okCookie = new OkCookie();
+                okCookie.setHost(httpUrl.host());
+                okCookie.setPort(httpUrl.port());
+                okCookie.setName(cookie.name());
+                okCookie.setValue(cookie.value());
+                okCookie.setExpiresAt(cookie.expiresAt());
+                okCookie.setDomain(cookie.domain());
+                okCookie.setPath(cookie.path());
+                okCookie.setSecure(cookie.secure());
+                okCookie.setHttpOnly(cookie.httpOnly());
+                okCookie.setHostOnly(cookie.hostOnly());
+                okCookie.setPersistent(cookie.persistent());
+                cookies.add(okCookie);
+            }
             String cookieJson = JSON.toJson(cookies);
-            Log.i(OkCookieJar.class.getSimpleName(),  cookieJson);
-            setCache(context, PREFIX + httpUrl.host(), cookieJson);
+            Log.i(OkCookieJar.class.getSimpleName(), cookieJson);
+            setCache(context, getCacheKey(httpUrl.host(), httpUrl.port()), cookieJson);
         }
+    }
+
+    /**
+     * @param host 主机名
+     * @param port 端口
+     * @return 缓存key
+     */
+    private String getCacheKey(String host, int port) {
+        return PREFIX + host + ":" + port;
     }
 
     /**
@@ -80,14 +94,21 @@ public class OkCookieJar implements Serializable, CookieJar {
      */
     private boolean hasCookie(HttpUrl httpUrl) {
         String requestHost = httpUrl.host();
-        String cookieJson = getCache(context, PREFIX + requestHost, "[]");
+        int requestPort = httpUrl.port();
+        String cookieJson = getCache(context, getCacheKey(requestHost, requestPort), "[]");
         List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
         int okCookieSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookieSize; i++) {
             OkCookie okCookie = okCookies.get(i);
             String host = okCookie.getHost();
+            int port = okCookie.getPort();
             long expiresAt = okCookie.getExpiresAt();
-            if (expiresAt > System.currentTimeMillis() && requestHost.equals(host)) {
+            long expireTime = expiresAt - System.currentTimeMillis();
+            if (expireTime > 0 && requestHost.equals(host) && requestPort == port) {
+                if (Configure.Config().isDebug()) {
+                    String expireDate = dateFormat.format(new Date(expiresAt));
+                    Log.i(OkCookieJar.class.getSimpleName(), "host = " + host + ",port = " + port + ",expireDate = " + expireDate);
+                }
                 return true;
             }
         }
@@ -102,7 +123,8 @@ public class OkCookieJar implements Serializable, CookieJar {
      */
     private List<Cookie> load(HttpUrl httpUrl) {
         String requestHost = httpUrl.host();
-        String cookieJson = getCache(context, PREFIX + requestHost, "[]");
+        int requestPort = httpUrl.port();
+        String cookieJson = getCache(context, getCacheKey(requestHost, requestPort), "[]");
         List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
         List<Cookie> cookies = new ArrayList<>();
         int okCookieSize = okCookies == null ? 0 : okCookies.size();
@@ -138,11 +160,12 @@ public class OkCookieJar implements Serializable, CookieJar {
      * 获取Cookie数据
      *
      * @param context 上下文
-     * @param hostKey 服务器key
+     * @param host    主机
+     * @param port    端口
      * @return
      */
-    public static List<Cookie> getCookies(Context context, String hostKey) {
-        String cookieJson = getCache(context, PREFIX + hostKey, "[]");
+    public static List<Cookie> getCookies(Context context, String host, int port) {
+        String cookieJson = getCache(context, PREFIX + host + ":" + port, "[]");
         List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
         List<Cookie> cookies = new ArrayList<>();
         int okCookiesSize = okCookies == null ? 0 : okCookies.size();
@@ -175,8 +198,8 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @param context 上下文
      * @param host    服务器
      */
-    public static void remove(Context context, String host) {
-        setCache(context, PREFIX + host, "[]");
+    public static void remove(Context context, String host, int port) {
+        setCache(context, PREFIX + host + ":" + port, "[]");
     }
 
     /**
@@ -199,7 +222,7 @@ public class OkCookieJar implements Serializable, CookieJar {
             return null;
         }
         String PACKAGE_NAME = context.getApplicationContext().getPackageName().replace(".", "_").toUpperCase();
-        String name = PACKAGE_NAME + "_" + getVersionCode(context.getApplicationContext()) + PREFIX;
+        String name = PREFIX + PACKAGE_NAME + "_" + getVersionCode(context.getApplicationContext());
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 

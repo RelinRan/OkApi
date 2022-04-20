@@ -6,6 +6,7 @@ public class OkCookie {
     private String name;
     private String value;
     private long expiresAt;
+    private int port;
     private String domain;
     private String path;
     private boolean secure;
@@ -93,6 +94,15 @@ public class OkCookie {
         this.persistent = persistent;
     }
 
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+
     @Override
     public String toString() {
         return "OkCookie{" +
@@ -100,6 +110,7 @@ public class OkCookie {
                 ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 ", expiresAt=" + expiresAt +
+                ", port=" + port +
                 ", domain='" + domain + '\'' +
                 ", path='" + path + '\'' +
                 ", secure=" + secure +
