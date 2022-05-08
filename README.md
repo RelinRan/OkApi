@@ -4,7 +4,8 @@ Android接口联调工具
 2.支持Get、Post、Put、Delete、Patch
 3.文件上传进度
 4.RSA、AES
-# [OkApi.aar](https://github.com/RelinRan/OkApi/blob/master/okapi_2022.4.20.1.aar)
+# AAR
+[okapi_2022.5.8.1.aar](https://github.com/RelinRan/OkApi/blob/master/okapi_2022.5.8.1.aar)
 # Maven
 1.build.grade | setting.grade
 ```
@@ -16,7 +17,7 @@ repositories {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:OkApi:2022.4.20.1'
+	implementation 'com.github.RelinRan:OkApi:2022.5.8.1'
 }
 ```
 # 权限
