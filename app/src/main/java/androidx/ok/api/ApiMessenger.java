@@ -110,8 +110,10 @@ public class ApiMessenger extends Handler {
             }
         }
         if (msg.what == FAILED) {
-            if (exception.getMessage().contains("not permitted by network security policy")) {
-                ApiLog.e(TAG, "服务器请求异常", "当前为http请求，建议安全使用https，如果一定要使用http,可在AndroidManifest.xml配置android:usesCleartextTraffic=\"true\"");
+            if (exception != null && exception.getMessage() != null) {
+                if (exception.getMessage().contains("not permitted by network security policy")) {
+                    ApiLog.e(TAG, "服务器请求异常", "当前为http请求，建议安全使用https，如果一定要使用http,可在AndroidManifest.xml配置android:usesCleartextTraffic=\"true\"");
+                }
             }
             if (requestListener != null) {
                 requestListener.onRequestFailed(request, exception);
