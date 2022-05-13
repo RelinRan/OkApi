@@ -3,6 +3,8 @@ package androidx.ok.api;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,31 @@ public class LogInterceptor implements Interceptor {
 
     public final String TAG = LogInterceptor.class.getSimpleName();
     private StringBuffer sb;
+    private static List<InterceptorCache> interceptorCaches;
+
+    /**
+     * @return 缓存日志
+     */
+    public static List<InterceptorCache> interceptorCaches() {
+        return interceptorCaches;
+    }
+
+    /**
+     * 创建缓存日志
+     */
+    public static void create() {
+        interceptorCaches = new ArrayList<>();
+    }
+
+    /**
+     * 销毁缓存日志
+     */
+    public static void destroy() {
+        if (interceptorCaches != null) {
+            interceptorCaches.clear();
+        }
+        interceptorCaches = null;
+    }
 
     @Override
     public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -28,26 +55,45 @@ public class LogInterceptor implements Interceptor {
         String url = httpUrl.toString();
         String method = request.method();
         okhttp3.Response response = chain.proceed(request);
-        if (Configure.Config().isDebug()) {
+        if (Configure.Config().isInterceptorCache() || Configure.Config().isDebug()) {
+            InterceptorCache logCache = new InterceptorCache();
             sb = new StringBuffer();
             sb.append(ApiLog.NEW_LINE);
             sb.append(ApiLog.HEAD_LINE).append(ApiLog.NEW_LINE);
             sb.append(ApiLog.LEFT_LINE + url).append(ApiLog.NEW_LINE);
+            logCache.setUrl(url);
             sb.append(ApiLog.MIDDLE_LINE).append(ApiLog.NEW_LINE);
             sb.append(ApiLog.LEFT_LINE + "Method: " + method).append(ApiLog.NEW_LINE);
+            logCache.setMethod(method);
+            StringBuffer headerBuffer = new StringBuffer();
             for (String name : request.headers().names()) {
                 String value = request.header(name);
                 sb.append(ApiLog.LEFT_LINE + name + ": " + value).append(ApiLog.NEW_LINE);
+                headerBuffer.append(name + ": " + value).append(ApiLog.NEW_LINE);
             }
+            logCache.setHeaders(headerBuffer.toString());
             sb.append(ApiLog.MIDDLE_LINE).append(ApiLog.NEW_LINE);
             String requestBody = getRequestBody(request.body());
             sb.append(ApiLog.LEFT_LINE + requestBody).append(ApiLog.NEW_LINE);
+            logCache.setParams(requestBody);
             int code = response.code();
             sb.append(ApiLog.MIDDLE_LINE).append(ApiLog.NEW_LINE);
             sb.append(ApiLog.LEFT_LINE + "code: " + code).append(ApiLog.NEW_LINE);
-            sb.append(ApiLog.LEFT_LINE + "body: " + decodeUnicode(getResponseBody(response.body()))).append(ApiLog.NEW_LINE);
+            logCache.setCode(code);
+            String body = decodeUnicode(getResponseBody(response.body()));
+            sb.append(ApiLog.LEFT_LINE + "body: " + body).append(ApiLog.NEW_LINE);
+            logCache.setBody(body);
             sb.append(ApiLog.BOTTOM_LINE).append(ApiLog.NEW_LINE);
-            ApiLog.i(TAG, sb.toString());
+            if (Configure.Config().isDebug()) {
+                ApiLog.i(TAG, sb.toString());
+            }
+            if (interceptorCaches != null) {
+                int size = interceptorCaches.size();
+                if (size + 1 > Configure.Config().interceptorCacheSize()) {
+                    create();
+                }
+                interceptorCaches.add(logCache);
+            }
         }
         return response;
     }

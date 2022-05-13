@@ -126,8 +126,18 @@ public class Configure {
      * 缓存控制
      */
     private CacheControl cacheControl;
-
+    /**
+     * 客户端
+     */
     private OkHttpClient client;
+    /**
+     * 拦截器缓存
+     */
+    private boolean interceptorCache = true;
+    /**
+     * 拦截器缓存个数
+     */
+    private int interceptorCacheSize = 50;
 
     /**
      * 构造参数
@@ -218,6 +228,7 @@ public class Configure {
 
     /**
      * 设置单例客户端
+     *
      * @param client 客户端
      */
     public void setHttpClient(OkHttpClient client) {
@@ -725,5 +736,42 @@ public class Configure {
         this.cacheControl = cacheControl;
         return this;
     }
+
+    /**
+     * @return 是否拦截器缓存
+     */
+    public boolean isInterceptorCache() {
+        return interceptorCache;
+    }
+
+    /**
+     * 设置是否拦截器缓存
+     *
+     * @param interceptorCache
+     * @return
+     */
+    public Configure interceptorCache(boolean interceptorCache) {
+        this.interceptorCache = interceptorCache;
+        return this;
+    }
+
+    /**
+     * @return 拦截器缓存
+     */
+    public int interceptorCacheSize() {
+        return interceptorCacheSize;
+    }
+
+    /**
+     * 拦截器缓存最大值
+     *
+     * @param interceptorCacheSize
+     * @return
+     */
+    public Configure interceptorCacheSize(int interceptorCacheSize) {
+        this.interceptorCacheSize = interceptorCacheSize;
+        return this;
+    }
+
 
 }
