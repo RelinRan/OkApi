@@ -45,7 +45,7 @@ public class Configure {
     /**
      * 客户端单列模式
      */
-    private boolean singleton;
+    private boolean singleton = true;
     /**
      * 当前服务器地址
      */

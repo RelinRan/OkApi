@@ -21,6 +21,10 @@ public class RequestParams {
      */
     private TreeMap<String, String> header;
     /**
+     * 接口标识
+     */
+    private String tag;
+    /**
      * 字符串参数
      */
     private String body;
@@ -186,7 +190,7 @@ public class RequestParams {
      *
      * @param body
      */
-    public void add(String body) {
+    public void addBody(String body) {
         this.body = body;
     }
 
@@ -197,6 +201,22 @@ public class RequestParams {
      */
     public String body() {
         return body;
+    }
+
+    /**
+     * 接口标识
+     * @param tag
+     */
+    public void addTag(String tag) {
+        this.tag = tag;
+    }
+
+    /**
+     * 接口标识
+     * @return
+     */
+    public String tag() {
+        return tag;
     }
 
 }

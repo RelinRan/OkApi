@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +57,10 @@ public final class OkApi implements Api {
      */
     private ApiMessenger messenger;
 
+    private List<Call> runningCalls;
+
     public OkApi() {
+        runningCalls = new ArrayList();
         messenger = new ApiMessenger();
     }
 
@@ -98,8 +101,7 @@ public final class OkApi implements Api {
 
     @Override
     public void cancel(String tag) {
-        List<Call> calls = getClient().dispatcher().runningCalls();
-        for (Call call : calls) {
+        for (Call call : runningCalls) {
             if (call.request().tag() != null) {
                 String requestTag = (String) call.request().tag();
                 if (requestTag.equals(tag)) {
@@ -107,6 +109,10 @@ public final class OkApi implements Api {
                 }
             }
         }
+    }
+
+    public List<Call> getRunningCalls() {
+        return runningCalls;
     }
 
     /**
@@ -203,8 +209,8 @@ public final class OkApi implements Api {
      * @return
      */
     protected String getTag(Context context, RequestParams params) {
-        if (params != null && params.header() != null && params.header().containsKey(Api.REQUEST_TAG)) {
-            return params.header().get(Api.REQUEST_TAG);
+        if (params != null && params.tag() != null) {
+            return params.tag();
         }
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
@@ -329,6 +335,7 @@ public final class OkApi implements Api {
         RequestBody body = createMultipartBody(params);
         Call call = createCall(context, method, path, params, body);
         call.enqueue(new OkCallback(messenger, listener));
+        runningCalls.add(call);
     }
 
     /**
@@ -346,6 +353,7 @@ public final class OkApi implements Api {
         RequestBody body = new SinkBody(createMultipartBody(params), messenger, sinkListener);
         Call call = createCall(context, method, path, params, body);
         call.enqueue(new OkCallback(messenger, requestListener));
+        runningCalls.add(call);
     }
 
     /**
@@ -377,6 +385,7 @@ public final class OkApi implements Api {
         RequestBody body = createBinaryRequestBody(params);
         Call call = createCall(context, method, path, params, body);
         call.enqueue(new OkCallback(messenger, listener));
+        runningCalls.add(call);
     }
 
     /**
@@ -395,6 +404,7 @@ public final class OkApi implements Api {
         SinkBody body = new SinkBody(requestBody, messenger, sinkListener);
         Call call = createCall(context, method, path, params, body);
         call.enqueue(new OkCallback(messenger, requestListener));
+        runningCalls.add(call);
     }
 
     /**
@@ -417,8 +427,8 @@ public final class OkApi implements Api {
         //请求加入调度
         Call call = getClient().newCall(request);
         call.enqueue(new OkCallback(messenger, listener));
+        runningCalls.add(call);
     }
-
 
     /**
      * 请求数据
