@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -31,6 +32,8 @@ public class Request {
      */
     private RequestBody body;
 
+    private Call call;
+
     public HttpUrl url() {
         return url;
     }
@@ -47,6 +50,14 @@ public class Request {
         this.method = method;
     }
 
+    public Call call() {
+        return call;
+    }
+
+    public void call(Call call) {
+        this.call = call;
+    }
+
     public Headers headers() {
         return headers;
     }
@@ -55,20 +66,26 @@ public class Request {
         this.headers = headers;
     }
 
+    public String header(String key) {
+        return headers.get(key);
+    }
+
+    public String tag() {
+        if (call == null) {
+            return null;
+        }
+        if (call.request().tag() == null) {
+            return null;
+        }
+        return (String) call.request().tag();
+    }
+
     public RequestBody body() {
         return body;
     }
 
     public void body(RequestBody body) {
         this.body = body;
-    }
-
-    public String requestTag() {
-        return headers.get(Api.REQUEST_TAG);
-    }
-
-    public String requestTag(String key) {
-        return headers.get(key);
     }
 
     public String bodyString() {

@@ -3,13 +3,13 @@ package androidx.ok.api;
 import android.util.Log;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
+import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
@@ -44,6 +44,8 @@ public class Response {
      * 请求
      */
     private okhttp3.Request request;
+
+    private okhttp3.Call call;
 
     /**
      * 是否成功
@@ -154,15 +156,33 @@ public class Response {
         this.request = request;
     }
 
-    public String requestTag() {
-        return headers.get(Api.REQUEST_TAG);
+    public Call call() {
+        return call;
     }
 
-    public String requestTag(String key) {
+    public void call(Call call) {
+        this.call = call;
+    }
+
+    public String header(String key) {
         return headers.get(key);
     }
 
-    public String requestBody() {
+    public String requestTag() {
+        if (call == null) {
+            return null;
+        }
+        if (call.request().tag() == null) {
+            return null;
+        }
+        return (String) call.request().tag();
+    }
+
+    public RequestBody requestBody() {
+        return request.body();
+    }
+
+    public String requestBodyString() {
         RequestBody requestBody = request.body();
         okio.Buffer buffer = new okio.Buffer();
         try {
@@ -177,6 +197,5 @@ public class Response {
         }
         return buffer.readString(charset);
     }
-
 
 }

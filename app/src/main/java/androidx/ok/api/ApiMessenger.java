@@ -30,6 +30,7 @@ public class ApiMessenger extends Handler {
         ResponseBody responseBody = new ResponseBody();
         //请求参数
         Request request = new Request();
+        request.call(call);
         request.url(call.request().url());
         request.method(call.request().method());
         request.headers(call.request().headers());
@@ -40,6 +41,7 @@ public class ApiMessenger extends Handler {
         //响应内容
         Response response = new Response();
         if (result != null) {
+            response.call(call);
             response.code(result.code());
             response.headers(result.headers());
             response.message(result.message());
