@@ -190,7 +190,7 @@ public class RequestParams {
      *
      * @param body
      */
-    public void addBody(String body) {
+    public void body(String body) {
         this.body = body;
     }
 
@@ -207,7 +207,7 @@ public class RequestParams {
      * 接口标识
      * @param tag
      */
-    public void addTag(String tag) {
+    public void tag(String tag) {
         this.tag = tag;
     }
 

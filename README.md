@@ -138,7 +138,7 @@ RequestParams params = new RequestParams();
 User user = new User();
 user.setName("OkApi");
 String json = JSON.toJson(user);
-params.addBody(json);
+params.body(json);
 api.get(context, "/business/editShelf", params, new OnRequestListener() {
     @Override
     public void onRequestSucceed(Request request, Response response) {
