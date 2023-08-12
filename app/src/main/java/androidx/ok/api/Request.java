@@ -63,6 +63,14 @@ public class Request {
         this.body = body;
     }
 
+    public String requestTag() {
+        return headers.get(Api.REQUEST_TAG);
+    }
+
+    public String requestTag(String key) {
+        return headers.get(key);
+    }
+
     public String bodyString() {
         RequestBody requestBody = body();
         okio.Buffer buffer = new okio.Buffer();
