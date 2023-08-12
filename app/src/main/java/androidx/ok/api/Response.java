@@ -170,10 +170,10 @@ public class Response {
 
     public String requestTag() {
         if (call == null) {
-            return null;
+            return "";
         }
         if (call.request().tag() == null) {
-            return null;
+            return "";
         }
         return (String) call.request().tag();
     }

@@ -72,10 +72,10 @@ public class Request {
 
     public String tag() {
         if (call == null) {
-            return null;
+            return "";
         }
         if (call.request().tag() == null) {
-            return null;
+            return "";
         }
         return (String) call.request().tag();
     }
