@@ -6,8 +6,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import okhttp3.Headers;
+import okhttp3.MediaType;
 import okhttp3.Protocol;
+import okhttp3.RequestBody;
 
 /**
  * 请求响应
@@ -147,5 +153,22 @@ public class Response {
     public void request(okhttp3.Request request) {
         this.request = request;
     }
+
+    public String requestBody() {
+        RequestBody requestBody = request.body();
+        okio.Buffer buffer = new okio.Buffer();
+        try {
+            requestBody.writeTo(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Charset charset = StandardCharsets.UTF_8;
+        MediaType contentType = requestBody.contentType();
+        if (contentType != null) {
+            charset = contentType.charset(StandardCharsets.UTF_8);
+        }
+        return buffer.readString(charset);
+    }
+
 
 }
