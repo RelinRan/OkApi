@@ -1,11 +1,19 @@
 # OkApi
-Android接口联调工具
-1.内含[JSON](https://github.com/RelinRan/JSON)、okhttp、okio
-2.支持Get、Post、Put、Delete、Patch
-3.文件上传进度
-4.RSA、AES
+Android接口联调工具  
+1.内含[JSON](https://github.com/RelinRan/JSON)、okhttp、okio  
+2.支持Get、Post、Put、Delete、Patch  
+3.文件上传进度  
+4.RSA、AES    
 # AAR
-[okapi_2023.9.1.1.aar](https://github.com/RelinRan/OkApi/blob/master/okapi_2023.9.1.1.aar)
+
+|名称|来源|操作|
+|-|-|-|
+|okapi_2023.9.1.1.aar|Github|[下载](https://github.com/RelinRan/OkApi/blob/master/okapi_2023.9.1.1.aar)|
+|JSON|GitHub|[查看](https://github.com/RelinRan/JSON)|
+|JSON|Gitee|[查看](https://gitee.com/relin/JSON)|
+|OkApi|GitHub|[查看](https://github.com/RelinRan/OkApi)|
+|OkApi|Gitee|[查看](https://gitee.com/relin/OkApi)|
+
 # Maven
 1.build.grade | setting.grade
 ```
