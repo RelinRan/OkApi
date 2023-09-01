@@ -3,6 +3,7 @@ package androidx.api;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -1064,16 +1065,28 @@ public class JSON {
         List<Field> fields = new ArrayList<>();
         while (clazz != null) {
             for (Field field : clazz.getDeclaredFields()) {
-                if (!Modifier.isStatic(field.getModifiers())) {
+                if (isCustomField(field)) {
                     field.setAccessible(true);
                     fields.add(field);
                 }
             }
             clazz = clazz.getSuperclass();
-            if (clazz != null) {
-            }
         }
         return fields.toArray(new Field[fields.size()]);
+    }
+
+    /**
+     * 是否自己定义的字段
+     *
+     * @param field 字段
+     * @return
+     */
+    public boolean isCustomField(Field field) {
+        int modifiers = field.getModifiers();
+        if (!Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers)) {
+            return true;
+        }
+        return false;
     }
 
     /**
