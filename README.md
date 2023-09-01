@@ -8,7 +8,7 @@ Android接口联调工具
 
 |名称|来源|操作|
 |-|-|-|
-|okapi_2023.9.1.1.aar|Github|[下载](https://github.com/RelinRan/OkApi/blob/master/okapi_2023.9.1.1.aar)|
+|okapi.aar|Github|[下载](https://github.com/RelinRan/OkApi/blob/master/aar)|
 |JSON|GitHub|[查看](https://github.com/RelinRan/JSON)|
 |JSON|Gitee|[查看](https://gitee.com/relin/JSON)|
 |OkApi|GitHub|[查看](https://github.com/RelinRan/OkApi)|
@@ -25,7 +25,7 @@ repositories {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:OkApi:2023.9.1.1'
+	implementation 'com.github.RelinRan:OkApi:2023.9.1.2'
 }
 ```
 # 权限
