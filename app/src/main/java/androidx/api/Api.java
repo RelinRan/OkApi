@@ -10,15 +10,15 @@ public interface Api {
     /**
      * 测试环境
      */
-    int BETA = -1;
+    int TEST = -1;
     /**
-     * 线上环境
+     * 开发环境
      */
-    int ONLINE = -2;
+    int DEVELOPMENT = -2;
     /**
-     * 生产环境
+     * 正式环境
      */
-    int PRODUCTION = -3;
+    int RELEASE  = -3;
     /**
      * 请求标识
      */

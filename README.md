@@ -35,9 +35,9 @@ android:usesCleartextTraffic="true"
 ```
 Configure configure = Api.initialize(this);
 configure.debug(true);//调试模式，可以查看日志
-configure.url(Api.BETA, "http://47.108.248.71:8109");//设置测试环境地址
-configure.url(Api.ONLINE, "https://www.yiketianqi.com");//设置线上环境地址
-configure.address(Api.BETA);//设置当前环境地址
+configure.url(Api.TEST, "http://47.108.248.71:8109");//设置测试环境地址
+configure.url(Api.RELEASE, "https://www.yiketianqi.com");//设置线上环境地址
+configure.address(Api.TEST);//设置当前环境地址
 configure.contentType(Api.JSON);//全局请求方式JSON
 configure.addInterceptor(xxx);//添加拦截器
 configure.singleton(false);//客户端单例模式.默认false,考虑到一个页面多个接口同时异步请求情况。
