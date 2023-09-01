@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -170,6 +171,7 @@ public class RequestParams {
 
     /**
      * 获取参数JSON
+     *
      * @return
      */
     public String dataJson() {
@@ -275,8 +277,15 @@ public class RequestParams {
      * @return
      */
     public String from(TreeMap<String, ?> map) {
+        if (map == null) {
+            return "{}";
+        }
         JSONObject obj = new JSONObject();
-        Iterator<String> iterator = map.keySet().iterator();
+        Set set = map.keySet();
+        if (set==null){
+            return obj.toString();
+        }
+        Iterator<String> iterator = set.iterator();
         while (iterator.hasNext()) {
             String key = iterator.next();
             Object value = map.get(key);
