@@ -5,7 +5,7 @@ Android接口联调工具
 3.文件上传进度
 4.RSA、AES
 # AAR
-[okapi_2023.8.12.1.aar](https://github.com/RelinRan/OkApi/blob/master/okapi_2023.8.12.1.aar)
+[okapi_2023.9.1.1.aar](https://github.com/RelinRan/OkApi/blob/master/okapi_2023.9.1.1.aar)
 # Maven
 1.build.grade | setting.grade
 ```
@@ -17,7 +17,7 @@ repositories {
 2./app/build.grade
 ```
 dependencies {
-	implementation 'com.github.RelinRan:OkApi:2023.8.12.1'
+	implementation 'com.github.RelinRan:OkApi:2023.9.1.1'
 }
 ```
 # 权限

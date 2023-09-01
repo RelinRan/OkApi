@@ -1,6 +1,12 @@
-package androidx.ok.api;
+package androidx.api;
+
+import android.text.TextUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 /**
@@ -163,6 +169,14 @@ public class RequestParams {
     }
 
     /**
+     * 获取参数JSON
+     * @return
+     */
+    public String dataJson() {
+        return from(data);
+    }
+
+    /**
      * 获取文件参数
      *
      * @return
@@ -205,6 +219,7 @@ public class RequestParams {
 
     /**
      * 接口标识
+     *
      * @param tag
      */
     public void tag(String tag) {
@@ -213,10 +228,66 @@ public class RequestParams {
 
     /**
      * 接口标识
+     *
      * @return
      */
     public String tag() {
         return tag;
+    }
+
+    /**
+     * 所有数据转JSON
+     *
+     * @return
+     */
+    public String toJson() {
+        JSONObject obj = new JSONObject();
+        put(obj, "file", from(file));
+        put(obj, "data", from(data));
+        put(obj, "header", from(header));
+        put(obj, "tag", tag);
+        put(obj, "body", body);
+        return obj.toString();
+    }
+
+    /**
+     * JSONObject插入值
+     *
+     * @param obj   JSONObject
+     * @param key   键
+     * @param value 值
+     */
+    public void put(JSONObject obj, String key, Object value) {
+        if (TextUtils.isEmpty(key) || value == null) {
+            return;
+        }
+        try {
+            obj.putOpt(key, value);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Map对象转JSON
+     *
+     * @param map
+     * @return
+     */
+    public String from(TreeMap<String, ?> map) {
+        JSONObject obj = new JSONObject();
+        Iterator<String> iterator = map.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = map.get(key);
+            if (value instanceof File) {
+                File file = (File) value;
+                put(obj, key, file.getAbsolutePath());
+            } else {
+                put(obj, key, value);
+            }
+        }
+        return obj.toString();
     }
 
 }

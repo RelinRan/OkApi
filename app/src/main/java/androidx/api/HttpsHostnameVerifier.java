@@ -1,4 +1,4 @@
-package androidx.ok.api;
+package androidx.api;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;

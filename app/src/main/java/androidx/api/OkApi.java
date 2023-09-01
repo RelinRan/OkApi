@@ -1,4 +1,4 @@
-package androidx.ok.api;
+package androidx.api;
 
 import android.app.Activity;
 import android.content.Context;
@@ -364,7 +364,7 @@ public final class OkApi implements Api {
         String contentType = params.header().get(Header.CONTENT_TYPE);
         MediaType mediaType = MediaType.parse(contentType);
         String bodyString = params.body();
-        String data = androidx.ok.api.JSON.toJson(params.data());
+        String data = params.dataJson();
         String content = TextUtils.isEmpty(bodyString) ? data : bodyString;
         if (contentType.equals(Api.JSON)) {
             content = Configure.Config().escapeJar().escape(content);

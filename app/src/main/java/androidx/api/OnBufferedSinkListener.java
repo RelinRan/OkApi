@@ -1,4 +1,4 @@
-package androidx.ok.api;
+package androidx.api;
 
 public interface OnBufferedSinkListener {
 

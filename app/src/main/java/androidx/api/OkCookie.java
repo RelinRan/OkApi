@@ -1,4 +1,4 @@
-package androidx.ok.api;
+package androidx.api;
 
 public class OkCookie {
 
@@ -119,4 +119,5 @@ public class OkCookie {
                 ", persistent=" + persistent +
                 '}';
     }
+
 }

@@ -1,4 +1,4 @@
-package androidx.ok.api;
+package androidx.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,6 @@ import android.util.Log;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,9 +25,11 @@ public class OkCookieJar implements Serializable, CookieJar {
     public static final String PREFIX = "OK_";
     private Context context;
     private SimpleDateFormat dateFormat;
+    private JSON json;
 
     public OkCookieJar(Context context) {
         this.context = context;
+        json = new JSON();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
@@ -73,7 +74,7 @@ public class OkCookieJar implements Serializable, CookieJar {
                 okCookie.setPersistent(cookie.persistent());
                 cookies.add(okCookie);
             }
-            String cookieJson = JSON.toJson(cookies);
+            String cookieJson = json.toJson(cookies);
             Log.i(OkCookieJar.class.getSimpleName(), cookieJson);
             setCache(context, getCacheKey(httpUrl.host(), httpUrl.port()), cookieJson);
         }
@@ -96,7 +97,7 @@ public class OkCookieJar implements Serializable, CookieJar {
         String requestHost = httpUrl.host();
         int requestPort = httpUrl.port();
         String cookieJson = getCache(context, getCacheKey(requestHost, requestPort), "[]");
-        List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
+        List<OkCookie> okCookies = json.toList(cookieJson, OkCookie.class);
         int okCookieSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookieSize; i++) {
             OkCookie okCookie = okCookies.get(i);
@@ -125,7 +126,7 @@ public class OkCookieJar implements Serializable, CookieJar {
         String requestHost = httpUrl.host();
         int requestPort = httpUrl.port();
         String cookieJson = getCache(context, getCacheKey(requestHost, requestPort), "[]");
-        List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
+        List<OkCookie> okCookies = json.toList(cookieJson, OkCookie.class);
         List<Cookie> cookies = new ArrayList<>();
         int okCookieSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookieSize; i++) {
@@ -166,7 +167,7 @@ public class OkCookieJar implements Serializable, CookieJar {
      */
     public static List<Cookie> getCookies(Context context, String host, int port) {
         String cookieJson = getCache(context, PREFIX + host + ":" + port, "[]");
-        List<OkCookie> okCookies = JSON.toCollection(cookieJson, OkCookie.class);
+        List<OkCookie> okCookies = new JSON().toList(cookieJson, OkCookie.class);
         List<Cookie> cookies = new ArrayList<>();
         int okCookiesSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookiesSize; i++) {

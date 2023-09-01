@@ -1,4 +1,4 @@
-package androidx.ok.api;
+package androidx.api;
 
 import android.util.Log;
 
@@ -101,7 +101,7 @@ public class Response {
      */
     public <T> T convert(Class<T> target) {
         if (isJsonBody()) {
-            return JSON.toObject(body(), target);
+            return new JSON().toObject(body(), target);
         } else {
             Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
         }
