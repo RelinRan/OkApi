@@ -72,7 +72,7 @@ public class Response {
      */
     public boolean isJsonObject(String body) {
         try {
-            JSONObject jsonObject = new JSONObject(body);
+            new JSONObject(body);
             return true;
         } catch (Exception e) {
             return false;
@@ -85,7 +85,7 @@ public class Response {
      */
     public boolean isJsonArray(String body) {
         try {
-            JSONArray jsonArray = new JSONArray(body);
+            new JSONArray(body);
             return true;
         } catch (Exception e) {
             return false;
