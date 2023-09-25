@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * OkHttp回调处理
@@ -34,7 +35,11 @@ public class OkCallback implements Callback {
     @Override
     public void onResponse(Call call, okhttp3.Response response) {
         if (onRequestListener != null) {
-            messenger.send(ApiMessenger.SUCCEED, call, response, null, onRequestListener);
+            if (response.isSuccessful()){
+                messenger.send(ApiMessenger.SUCCEED, call, response, null, onRequestListener);
+            }else{
+                messenger.send(ApiMessenger.FAILED, call, response, new Exception("response code = "+response.code()), onRequestListener);
+            }
         }
     }
 }
