@@ -1,22 +1,18 @@
-# OkApi
+#### OkApi
 Android接口联调工具  
 1.内含[JSON](https://github.com/RelinRan/JSON)、okhttp、okio  
 2.支持Get、Post、Put、Delete、Patch  
 3.文件上传进度  
 4.RSA、AES    
-# AAR
+#### 资源
 
 |名称|来源|操作|
 |-|-|-|
 |okapi.aar|Github|[下载](https://github.com/RelinRan/OkApi/blob/master/aar)|
-|JSON|GitHub|[查看](https://github.com/RelinRan/JSON)|
-|JSON|Gitee|[查看](https://gitee.com/relin/JSON)|
-|Oson|GitHub|[查看](https://github.com/RelinRan/Oson)|
-|Oson|Gitee|[查看](https://gitee.com/relin/Oson)|
 |OkApi|GitHub|[查看](https://github.com/RelinRan/OkApi)|
-|OkApi|Gitee|[查看](https://gitee.com/relin/OkApi)|
-
-# Maven
+|Oson|GitHub|[查看](https://github.com/RelinRan/Oson)|
+|JSON|GitHub|[查看](https://github.com/RelinRan/JSON)|
+#### Maven
 1.build.grade | setting.grade
 ```
 repositories {
@@ -30,17 +26,16 @@ dependencies {
 	implementation 'com.github.RelinRan:OkApi:2023.9.25.1'
 }
 ```
-# 权限
-1.网络权限
+#### 初始化
+网络权限
 ```
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
-2.非https请求，AndroidManifest.xml中application标签设置属性：
+非https请求，AndroidManifest.xml中application标签设置属性：
 ```
 android:usesCleartextTraffic="true"
 ```
-# 初始化
 注意在Application里初始化
 ```
 Configure configure = Api.initialize(this);
@@ -52,7 +47,7 @@ configure.contentType(Api.JSON);//全局请求方式JSON
 configure.addInterceptor(xxx);//添加拦截器
 configure.singleton(false);//客户端单例模式.默认false,考虑到一个页面多个接口同时异步请求情况。
 ```
-# 生命周期
+#### 周期
 默认页面标识
 ```
 Api api = new OkApi();
@@ -78,7 +73,7 @@ protected void onDestroy() {
     api.cancel("tag-1");
 }
 ```
-# 表单
+#### 表单
 ```
 //方法一
 Api.initialize(this).contentType(Api.FORM_DATA);
@@ -88,8 +83,7 @@ Configure.Config().contentType(Api.FORM_DATA);
 RequestParams params = new RequestParams();
 params.addHeader(Header.CONTENT_TYPE,Api.FORM_DATA);
 ```
-# JSON
-JSON工具，请点击[Gitee-JSON](https://gitee.com/relin/JSON) 或 [GitHub-JSON](https://github.com/RelinRan/JSON)
+#### [JSON](https://github.com/RelinRan/JSON)
 ```
 //方法一
 Api.initialize(this).contentType(Api.JSON);
@@ -99,7 +93,7 @@ Configure.Config().contentType(Api.JSON);
 RequestParams params = new RequestParams();
 params.addHeader(Header.CONTENT_TYPE,Api.JSON);
 ```
-# GET
+#### GET
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -116,7 +110,7 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-# POST
+#### POST
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -133,15 +127,14 @@ api.post(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-# 实体转换
-JSON工具，请点击[Gitee-JSON](https://gitee.com/relin/JSON) 或 [GitHub-JSON](https://github.com/RelinRan/JSON)
+#### [实体转换](https://github.com/RelinRan/JSON)
 ```
 @Override
 public void onRequestSucceed(Request request, Response response) {
      User user = response.convert(User.class);
 }
 ```
-# 实体上传
+#### 实体上传
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -161,7 +154,7 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-# 切换域名
+#### 切换域名
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -178,7 +171,7 @@ api.get(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-# 文件上传
+#### 文件上传
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -197,7 +190,7 @@ api.post(context, "/business/editShelf", params, new OnRequestListener() {
     }
 });
 ```
-# 上传进度
+#### 上传进度
 ```
 Api api = new OkApi();
 RequestParams params = new RequestParams();
@@ -221,8 +214,8 @@ api.upload(context, "/upload/file", params, new OnBufferedSinkListener() {
     }
 });
 ```
-# 文件下载
-1.在res/新建xml文件夹，在xml文件夹新建path.xml
+#### 文件下载
+在res/新建xml文件夹，在xml文件夹新建path.xml
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
@@ -240,13 +233,13 @@ api.upload(context, "/upload/file", params, new OnBufferedSinkListener() {
         path="/storage/emulated/0/Android/data/${applicationId}/cache/Download" />
 </paths>
 ```
-2.权限，注意6.0以上还需要动态申请权限
+权限，注意6.0以上还需要动态申请权限
 ```
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 ```
-3.FileProvider配置
+FileProvider配置
 ```
 <provider
     android:name="androidx.core.content.FileProvider"
@@ -258,7 +251,7 @@ api.upload(context, "/upload/file", params, new OnBufferedSinkListener() {
         android:resource="@xml/paths" />
 </provider>
 ```
-4.下载操作
+下载操作
 ```
 Downloader.Builder builder = new Downloader.Builder(this);
 builder.url("http://download.tianditu.com/download/mobile/Tiandituapi3.0.2%2820190103-02%29.zip");
@@ -281,10 +274,10 @@ builder.listener(new OnDownloadListener() {
 builder.breakpoint(true);
 builder.build();
 ```
-# RSA
-## 初始化
-以下设置会有默认值
+#### RSA
+初始化
 ```
+//以下设置会有默认值
 //公钥字符串
 RSA.PUBLIC_KEY = "xxx";
 //私钥字符串
@@ -296,32 +289,32 @@ RSA.ENCRYPT_ALGORITHM = "RSA/ECB/PKCS1Padding";
 //解密算法
 RSA.DECRYPT_ALGORITHM = "RSA/ECB/PKCS1Padding";
 ```
-## 加签
+加签
 ```
 String sign(String param);
 ```
-## 验签
+验签
 ```
 boolean verifySign(String param, String sign);
 ```
-## 加密
+加密
 ```
 String encrypt(String param);
 ```
-## 解密
+解密
 ```
 String decrypt(String param);
 ```
-# AES
-## 初始化
+#### AES
+初始化
 ```
 AES.SECRET_KEY = "xxx";
 ```
-## 加密
+加密
 ```
 String encrypt(String content);
 ```
-## 解密
+解密
 ```
 String decrypt(String content);
 ```
