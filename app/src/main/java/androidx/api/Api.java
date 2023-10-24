@@ -8,17 +8,25 @@ import android.content.Context;
 public interface Api {
 
     /**
+     * 内网环境
+     */
+    int INTRANET = 0;
+    /**
      * 测试环境
      */
-    int TEST = -1;
+    int TEST = 1;
     /**
      * 开发环境
      */
-    int DEVELOPMENT = -2;
+    int DEVELOPMENT = 2;
     /**
      * 正式环境
      */
-    int RELEASE  = -3;
+    int RELEASE = 3;
+    /**
+     * 可变环境
+     */
+    int SETTINGS = 4;
     /**
      * 请求标识
      */
