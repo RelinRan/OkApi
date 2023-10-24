@@ -20,7 +20,7 @@ import okio.BufferedSource;
  */
 public class LogInterceptor implements Interceptor {
 
-    public final String TAG = LogInterceptor.class.getSimpleName();
+    public final String TAG = "OkApi";
     private StringBuffer sb;
     private static List<InterceptorCache> interceptorCaches;
 
