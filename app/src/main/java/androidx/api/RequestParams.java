@@ -35,6 +35,7 @@ public class RequestParams {
      * 字符串参数
      */
     private String body;
+    private byte[] bytes;
 
     public RequestParams() {
 
@@ -211,12 +212,30 @@ public class RequestParams {
     }
 
     /**
+     * 字节数据
+     *
+     * @param bytes
+     */
+    public void body(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+    /**
      * 返回字符串的Body实例
      *
      * @return
      */
     public String body() {
         return body;
+    }
+
+    /**
+     * 获取字节数据
+     *
+     * @return
+     */
+    public byte[] getBytes() {
+        return bytes;
     }
 
     /**
@@ -282,7 +301,7 @@ public class RequestParams {
         }
         JSONObject obj = new JSONObject();
         Set set = map.keySet();
-        if (set==null){
+        if (set == null) {
             return obj.toString();
         }
         Iterator<String> iterator = set.iterator();

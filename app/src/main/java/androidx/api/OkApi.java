@@ -10,6 +10,7 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
@@ -363,6 +364,9 @@ public final class OkApi implements Api {
     protected RequestBody createBinaryRequestBody(RequestParams params) {
         String contentType = params.header().get(Header.CONTENT_TYPE);
         MediaType mediaType = MediaType.parse(contentType);
+        if (params.getBytes() != null) {
+            return RequestBody.create(mediaType, params.getBytes());
+        }
         String bodyString = params.body();
         String data = params.dataJson();
         String content = TextUtils.isEmpty(bodyString) ? data : bodyString;
