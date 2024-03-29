@@ -213,6 +213,9 @@ public final class OkApi implements Api {
         if (params != null && params.tag() != null) {
             return params.tag();
         }
+        if (params != null && params.header() != null && params.header().containsKey(Api.REQUEST_TAG)) {
+            return params.header().get(Api.REQUEST_TAG);
+        }
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
             return activity.getClass().getSimpleName();
@@ -364,8 +367,8 @@ public final class OkApi implements Api {
     protected RequestBody createBinaryRequestBody(RequestParams params) {
         String contentType = params.header().get(Header.CONTENT_TYPE);
         MediaType mediaType = MediaType.parse(contentType);
-        if (params.getBytes() != null) {
-            return RequestBody.create(mediaType, params.getBytes());
+        if (params.binary() != null) {
+            return RequestBody.create(mediaType, params.binary());
         }
         String bodyString = params.body();
         String data = params.dataJson();

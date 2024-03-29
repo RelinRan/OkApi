@@ -35,7 +35,7 @@ public class RequestParams {
      * 字符串参数
      */
     private String body;
-    private byte[] bytes;
+    private byte[] binary;
 
     public RequestParams() {
 
@@ -202,7 +202,6 @@ public class RequestParams {
         return header;
     }
 
-
     /**
      * 添加字符串实例
      *
@@ -215,10 +214,10 @@ public class RequestParams {
     /**
      * 字节数据
      *
-     * @param bytes
+     * @param binary
      */
-    public void body(byte[] bytes) {
-        this.bytes = bytes;
+    public void binary(byte[] binary) {
+        this.binary = binary;
     }
 
     /**
@@ -235,8 +234,8 @@ public class RequestParams {
      *
      * @return
      */
-    public byte[] getBytes() {
-        return bytes;
+    public byte[] binary() {
+        return binary;
     }
 
     /**
