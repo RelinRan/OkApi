@@ -8,6 +8,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Headers;
@@ -44,8 +46,14 @@ public class Response {
      * 请求
      */
     private okhttp3.Request request;
-
     private okhttp3.Call call;
+    private JSONArray array;
+    private JSONObject object;
+    private JSON json;
+
+    public Response() {
+        json = new JSON();
+    }
 
     /**
      * 是否成功
@@ -72,9 +80,13 @@ public class Response {
      */
     public boolean isJsonObject(String body) {
         try {
-            new JSONObject(body);
+            if (object != null) {
+                object = null;
+            }
+            object = new JSONObject(body);
             return true;
         } catch (Exception e) {
+            object = null;
             return false;
         }
     }
@@ -85,9 +97,13 @@ public class Response {
      */
     public boolean isJsonArray(String body) {
         try {
-            new JSONArray(body);
+            if (array != null) {
+                array = null;
+            }
+            array = new JSONArray(body);
             return true;
         } catch (Exception e) {
+            array = null;
             return false;
         }
     }
@@ -99,10 +115,49 @@ public class Response {
      * @param <T>    类名
      * @return
      */
-    public <T> T convert(Class<T> target) {
+    public <T> T toObject(Class<T> target) {
         if (isJsonBody()) {
-            return new JSON().toObject(body(), target);
+            object = null;
+            return json.toObject(body(), target);
         } else {
+            object = null;
+            Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
+        }
+        return null;
+    }
+
+    /**
+     * 转换为实体
+     *
+     * @param target 实体类
+     * @param <T>    类名
+     * @return
+     */
+    public <T, C extends List> C toList(Class<T> target) {
+        if (isJsonArray(body())) {
+            array = null;
+            return json.toList(body(), target);
+        } else {
+            array = null;
+            Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
+        }
+        return null;
+    }
+
+    /**
+     * 转换为实体
+     *
+     * @param collectionType 集合类型
+     * @param clazz          对象类
+     * @param <T>            类名
+     * @return
+     */
+    public <T, C extends Collection> C toCollection(Class<?> collectionType, Class<T> clazz) {
+        if (isJsonArray(body())) {
+            array = null;
+            return json.toCollection(body(), collectionType, clazz);
+        } else {
+            array = null;
             Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
         }
         return null;
