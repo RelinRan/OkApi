@@ -31,8 +31,11 @@ public class Request {
      * 请求体
      */
     private RequestBody body;
-
+    /**
+     * 请求
+     */
     private Call call;
+
 
     public HttpUrl url() {
         return url;
@@ -102,6 +105,20 @@ public class Request {
             charset = contentType.charset(StandardCharsets.UTF_8);
         }
         return buffer.readString(charset);
+    }
+
+    /**
+     * 资源释放
+     */
+    public void release() {
+        url = null;
+        body = null;
+        headers = null;
+        method = null;
+        if (call != null) {
+            call.cancel();
+        }
+        call = null;
     }
 
 }

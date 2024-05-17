@@ -52,6 +52,7 @@ public class ResponseBody {
 
     /**
      * 设置响应
+     *
      * @param response
      */
     public void setResponse(Response response) {
@@ -99,11 +100,22 @@ public class ResponseBody {
 
     /**
      * 设置写入监听
+     *
      * @param onBufferedSinkListener 文件上传写入监听
      */
     public void setBufferedSinkListener(OnBufferedSinkListener onBufferedSinkListener) {
         this.onBufferedSinkListener = onBufferedSinkListener;
     }
 
+    /**
+     * 资源释放
+     */
+    public void release() {
+        request = null;
+        response = null;
+        exception = null;
+        onRequestListener = null;
+        onBufferedSinkListener = null;
+    }
 
 }

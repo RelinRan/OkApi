@@ -2,6 +2,7 @@ package androidx.api;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,10 @@ public class ApiMessenger extends Handler {
     public static final String TAG = ApiMessenger.class.getSimpleName();
 
     public ApiMessenger() {
+    }
+
+    public ApiMessenger(@NonNull Looper looper) {
+        super(looper);
     }
 
     /**

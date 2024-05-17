@@ -133,12 +133,16 @@ public interface Api {
      */
     void cancel(Context context);
 
-
     /**
      * 取消请求
      *
      * @param tag 标识
      */
     void cancel(String tag);
+
+    /**
+     * 资源释放
+     */
+    void release();
 
 }

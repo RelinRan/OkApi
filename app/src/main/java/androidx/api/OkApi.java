@@ -3,6 +3,7 @@ package androidx.api;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public final class OkApi implements Api {
 
     public OkApi() {
         runningCalls = new ArrayList();
-        messenger = new ApiMessenger();
+        messenger = new ApiMessenger(Looper.getMainLooper());
     }
 
     @Override
@@ -111,6 +112,8 @@ public final class OkApi implements Api {
             }
         }
     }
+
+
 
     public List<Call> getRunningCalls() {
         return runningCalls;
@@ -479,6 +482,13 @@ public final class OkApi implements Api {
             multipartBodyUpload(context, method, params, path, sinkListener, requestListener);
         } else {
             binaryBodyUpload(context, method, params, path, sinkListener, requestListener);
+        }
+    }
+
+    @Override
+    public void release() {
+        for (Call call : runningCalls) {
+            call.cancel();
         }
     }
 

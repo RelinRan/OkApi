@@ -46,13 +46,37 @@ public class Response {
      * 请求
      */
     private okhttp3.Request request;
+    /**
+     * 请求
+     */
     private okhttp3.Call call;
+    /**
+     * JSONArray
+     */
     private JSONArray array;
+    /**
+     * JSONObject
+     */
     private JSONObject object;
+    /**
+     * JSON解析
+     */
     private JSON json;
 
     public Response() {
         json = new JSON();
+    }
+
+    /**
+     * json解析对象
+     *
+     * @return
+     */
+    public JSON json() {
+        if (json == null) {
+            json = new JSON();
+        }
+        return json;
     }
 
     /**
@@ -118,7 +142,7 @@ public class Response {
     public <T> T toObject(Class<T> target) {
         if (isJsonBody()) {
             object = null;
-            return json.toObject(body(), target);
+            return json().toObject(body(), target);
         } else {
             object = null;
             Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
@@ -136,7 +160,7 @@ public class Response {
     public <T, C extends List> C toList(Class<T> target) {
         if (isJsonArray(body())) {
             array = null;
-            return json.toList(body(), target);
+            return json().toList(body(), target);
         } else {
             array = null;
             Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
@@ -155,7 +179,7 @@ public class Response {
     public <T, C extends Collection> C toCollection(Class<?> collectionType, Class<T> clazz) {
         if (isJsonArray(body())) {
             array = null;
-            return json.toCollection(body(), collectionType, clazz);
+            return json().toCollection(body(), collectionType, clazz);
         } else {
             array = null;
             Log.e(Response.class.getSimpleName(), "The returned data is not json and cannot be converted normally.");
@@ -233,10 +257,20 @@ public class Response {
         return (String) call.request().tag();
     }
 
+    /**
+     * 请求体
+     *
+     * @return
+     */
     public RequestBody requestBody() {
         return request.body();
     }
 
+    /**
+     * 请求体字符串
+     *
+     * @return
+     */
     public String requestBodyString() {
         RequestBody requestBody = request.body();
         okio.Buffer buffer = new okio.Buffer();
@@ -251,6 +285,24 @@ public class Response {
             charset = contentType.charset(StandardCharsets.UTF_8);
         }
         return buffer.readString(charset);
+    }
+
+    /**
+     * 资源释放
+     */
+    public void release() {
+        message = null;
+        body = null;
+        headers = null;
+        protocol = null;
+        request = null;
+        if (call != null) {
+            call.cancel();
+            call = null;
+        }
+        array = null;
+        object = null;
+        json = null;
     }
 
 }

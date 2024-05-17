@@ -35,6 +35,9 @@ public class RequestParams {
      * 字符串参数
      */
     private String body;
+    /**
+     * 二进制数据
+     */
     private byte[] binary;
 
     public RequestParams() {
@@ -316,6 +319,18 @@ public class RequestParams {
             }
         }
         return obj.toString();
+    }
+
+    /**
+     * 资源释放
+     */
+    public void release(){
+        file = null;
+        data = null;
+        header = null;
+        tag = null;
+        body = null;
+        binary = null;
     }
 
 }
