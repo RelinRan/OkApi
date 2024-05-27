@@ -110,7 +110,7 @@ public class Request {
     /**
      * 资源释放
      */
-    public void release() {
+    public void cancel() {
         url = null;
         body = null;
         headers = null;

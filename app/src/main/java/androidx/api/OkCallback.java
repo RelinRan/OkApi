@@ -30,6 +30,7 @@ public class OkCallback implements Callback {
         if (onRequestListener != null) {
             messenger.send(ApiMessenger.FAILED, call, null, e, onRequestListener);
         }
+        call.cancel();
     }
 
     @Override
@@ -41,5 +42,7 @@ public class OkCallback implements Callback {
                 messenger.send(ApiMessenger.FAILED, call, response, new Exception("response code = "+response.code()), onRequestListener);
             }
         }
+        call.cancel();
+        response.close();
     }
 }

@@ -290,7 +290,7 @@ public class Response {
     /**
      * 资源释放
      */
-    public void release() {
+    public void close() {
         message = null;
         body = null;
         headers = null;

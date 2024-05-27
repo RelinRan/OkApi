@@ -57,6 +57,8 @@ public class ApiMessenger extends Handler {
                 response.body(body);
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                result.close();
             }
         }
         responseBody.setResponse(response);
