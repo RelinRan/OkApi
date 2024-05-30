@@ -150,17 +150,17 @@ public class HttpsTrustManager {
                     keyManagerFactory.init(keyStore, password.toCharArray());
                 }
             } catch (CertificateException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             } catch (KeyStoreException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             } catch (IOException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             } catch (UnrecoverableKeyException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             } catch (NoSuchProviderException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             }
         }
         return this;

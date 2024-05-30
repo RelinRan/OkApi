@@ -176,11 +176,10 @@ public class LogInterceptor implements Interceptor {
         Buffer buffer = new Buffer();
         try {
             requestBody.writeTo(buffer);
-            return buffer.readUtf8();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return "";
+        return buffer.readUtf8();
     }
 
     /**
@@ -211,7 +210,7 @@ public class LogInterceptor implements Interceptor {
         try {
             source.request(Long.MAX_VALUE);
         } catch (IOException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         Buffer buffer = source.buffer();
         Charset charset = Charset.forName("UTF-8");

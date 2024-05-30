@@ -31,9 +31,8 @@ public class AES {
             byte[] result = encrypt(SECRET_KEY, content);
             return new String(Base64.encode(result, Base64.DEFAULT));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**
@@ -50,9 +49,8 @@ public class AES {
             byte[] value = decrypt(SECRET_KEY, content.getBytes("UTF-8"));
             return new String(Base64.encode(value, Base64.DEFAULT));
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**

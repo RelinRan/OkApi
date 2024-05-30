@@ -99,7 +99,7 @@ public class JSON {
         try {
             jsonObject = new JSONObject(json);
         } catch (JSONException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         return jsonObject;
     }
@@ -120,7 +120,7 @@ public class JSON {
                 Object value = object.get(key);
                 map.put(key, value);
             } catch (JSONException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             }
         }
         return map;
@@ -143,7 +143,7 @@ public class JSON {
                 Object value = object.get(key);
                 map.put(key, (T) value);
             } catch (JSONException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             }
         }
         return map;
@@ -407,7 +407,7 @@ public class JSON {
                 field.set(bean, booleanValue);
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
     }
 
@@ -507,11 +507,11 @@ public class JSON {
                     bean = (T) constructor.newInstance();
                 }
             }
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
         return bean;
@@ -693,9 +693,9 @@ public class JSON {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
     }
 
@@ -829,7 +829,7 @@ public class JSON {
                     list.add(toMap(jsonObject));
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             }
         }
         return list;
@@ -889,11 +889,11 @@ public class JSON {
                 }
             }
         } catch (InstantiationException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         } catch (JSONException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         return list;
     }
@@ -928,7 +928,7 @@ public class JSON {
                 JSONObject jsonObject = (JSONObject) array.get(i);
                 list.add(toObject(jsonObject, clazz, variable));
             } catch (JSONException e) {
-                e.printStackTrace();
+               throw new RuntimeException(e);
             }
         }
         return list;
@@ -994,7 +994,7 @@ public class JSON {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         return (C) collection;
     }
@@ -1065,7 +1065,7 @@ public class JSON {
                 }
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
     }
 
@@ -1223,7 +1223,7 @@ public class JSON {
                             addJSONObjectKeyValue(jsonObject, name, value);
                         }
                     } catch (IllegalAccessException | JSONException e) {
-                        e.printStackTrace();
+                       throw new RuntimeException(e);
                     }
                 }
             }

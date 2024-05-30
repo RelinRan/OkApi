@@ -66,7 +66,7 @@ public class RSA {
             // 用于签名和解密
             privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Base64.decode(PRIVATE_KEY, Base64.DEFAULT)));
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
     }
 
@@ -86,9 +86,8 @@ public class RSA {
             signature.update(param.getBytes(CHARSET));
             return Base64.encodeToString(signature.sign(), Base64.DEFAULT);
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-        return "";
     }
 
     /**
@@ -108,9 +107,8 @@ public class RSA {
             signature.update(param.getBytes(CHARSET));
             return signature.verify(Base64.decode(sign, Base64.DEFAULT));
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-        return false;
     }
 
     /**
@@ -147,9 +145,8 @@ public class RSA {
             }
             return Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-        return "";
     }
 
     /**
@@ -186,9 +183,8 @@ public class RSA {
             }
             return new String(out.toByteArray(), CHARSET);
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-        return "";
     }
 
 }

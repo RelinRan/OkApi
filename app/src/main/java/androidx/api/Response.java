@@ -34,6 +34,7 @@ public class Response {
      * 响应结果
      */
     private String body;
+    private byte[] bytes;
     /**
      * 头部参数
      */
@@ -227,6 +228,14 @@ public class Response {
         this.body = body;
     }
 
+    public byte[] bytes() {
+        return bytes;
+    }
+
+    public void bytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
     public okhttp3.Request request() {
         return request;
     }
@@ -277,7 +286,7 @@ public class Response {
         try {
             requestBody.writeTo(buffer);
         } catch (IOException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         Charset charset = StandardCharsets.UTF_8;
         MediaType contentType = requestBody.contentType();
@@ -299,6 +308,9 @@ public class Response {
         if (call != null) {
             call.cancel();
             call = null;
+        }
+        if (bytes != null) {
+            bytes = null;
         }
         array = null;
         object = null;

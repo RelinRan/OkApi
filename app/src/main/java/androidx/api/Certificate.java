@@ -166,9 +166,8 @@ public class Certificate {
         try {
             return context.getAssets().open(filename);
         } catch (IOException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**
@@ -221,9 +220,9 @@ public class Certificate {
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(new HttpsHostnameVerifier());
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         } catch (KeyManagementException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         return this;
     }

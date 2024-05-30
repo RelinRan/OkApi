@@ -238,7 +238,7 @@ public class OkCookieJar implements Serializable, CookieJar {
             PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
             versionCode = pi.versionCode;
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         return versionCode;
     }

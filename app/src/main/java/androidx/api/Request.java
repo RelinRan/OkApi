@@ -97,7 +97,7 @@ public class Request {
         try {
             requestBody.writeTo(buffer);
         } catch (IOException e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
         Charset charset = StandardCharsets.UTF_8;
         MediaType contentType = requestBody.contentType();

@@ -8,6 +8,7 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class ApiMessenger extends Handler {
 
@@ -53,11 +54,12 @@ public class ApiMessenger extends Handler {
             response.protocol(result.protocol());
             response.request(result.request());
             try {
-                String body = result.body().string();
-                response.body(body);
+                byte[] bytes = result.body().bytes();
+                response.bytes(bytes);
+                response.body(new String(bytes, Charset.forName("UTF-8")));
             } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
+                throw new RuntimeException(e);
+            }finally {
                 result.close();
             }
         }
