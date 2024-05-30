@@ -53,15 +53,14 @@ public class ApiMessenger extends Handler {
             response.message(result.message());
             response.protocol(result.protocol());
             response.request(result.request());
+            byte[] bytes = new byte[0];
             try {
-                byte[] bytes = result.body().bytes();
-                response.bytes(bytes);
-                response.body(new String(bytes, Charset.forName("UTF-8")));
+                bytes = result.body().bytes();
             } catch (IOException e) {
-                throw new RuntimeException(e);
-            }finally {
-                result.close();
+                e.printStackTrace();
             }
+            response.bytes(bytes);
+            response.body(new String(bytes, Charset.forName("UTF-8")));
         }
         responseBody.setResponse(response);
         return responseBody;
