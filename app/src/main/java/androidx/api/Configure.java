@@ -164,7 +164,7 @@ public class Configure {
         interceptors = new ArrayList<>();
         cookieJar = new OkCookieJar(context);
         interceptors.add(new LogInterceptor());
-        retryOnConnectionFailure = true;
+        retryOnConnectionFailure = false;
         requestCert = new Certificate().build();
         socketFactory = requestCert.getSSLSocketFactory();
         x509TrustManager = new HttpsX509TrustManager();
