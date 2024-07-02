@@ -1,5 +1,7 @@
 package androidx.api;
 
+import android.text.TextUtils;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -36,10 +38,19 @@ public class OkCallback implements Callback {
     @Override
     public void onResponse(Call call, okhttp3.Response response) {
         if (onRequestListener != null) {
-            if (response.isSuccessful()){
+            if (response.isSuccessful()) {
                 messenger.send(ApiMessenger.SUCCEED, call, response, null, onRequestListener);
-            }else{
-                messenger.send(ApiMessenger.FAILED, call, response, new Exception("response code = "+response.code()), onRequestListener);
+            } else {
+                String content = null;
+                try {
+                    content = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (content == null) {
+                    content = String.valueOf(response.code());
+                }
+                messenger.send(ApiMessenger.FAILED, call, response, new Exception(content), onRequestListener);
             }
         }
         call.cancel();
