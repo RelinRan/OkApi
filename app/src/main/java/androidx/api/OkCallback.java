@@ -41,16 +41,7 @@ public class OkCallback implements Callback {
             if (response.isSuccessful()) {
                 messenger.send(ApiMessenger.SUCCEED, call, response, null, onRequestListener);
             } else {
-                String content = null;
-                try {
-                    content = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (content == null) {
-                    content = String.valueOf(response.code());
-                }
-                messenger.send(ApiMessenger.FAILED, call, response, new Exception(content), onRequestListener);
+                messenger.send(ApiMessenger.FAILED, call, response, new Exception(String.valueOf(response.code())), onRequestListener);
             }
         }
         call.cancel();
