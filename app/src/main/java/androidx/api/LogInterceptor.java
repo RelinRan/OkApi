@@ -20,32 +20,37 @@ import okio.BufferedSource;
  */
 public class LogInterceptor implements Interceptor {
 
-    public final String TAG = "OkApi";
+    public final String TAG = OkApi.class.getSimpleName();
     private StringBuffer sb;
-    private static List<InterceptorCache> interceptorCaches;
+    private Charset charset;
+    private Buffer buffer;
+    private List<InterceptorCache> interceptorCaches;
 
     /**
      * @return 缓存日志
      */
-    public static List<InterceptorCache> interceptorCaches() {
+    public List<InterceptorCache> interceptorCaches() {
         return interceptorCaches;
     }
 
     /**
      * 创建缓存日志
      */
-    public static void create() {
+    public void create() {
         interceptorCaches = new ArrayList<>();
     }
 
     /**
      * 销毁缓存日志
      */
-    public static void destroy() {
+    public void destroy() {
         if (interceptorCaches != null) {
             interceptorCaches.clear();
         }
         interceptorCaches = null;
+        sb = null;
+        charset = null;
+        buffer = null;
     }
 
     @Override
@@ -177,7 +182,7 @@ public class LogInterceptor implements Interceptor {
         try {
             requestBody.writeTo(buffer);
         } catch (IOException e) {
-            return "";
+            throw new RuntimeException(e);
         }
         return buffer.readUtf8();
     }
@@ -208,14 +213,14 @@ public class LogInterceptor implements Interceptor {
     private String getResponseBody(okhttp3.ResponseBody responseBody) {
         BufferedSource source = responseBody.source();
         try {
-            source.request(Long.MAX_VALUE);
+            source.request(Integer.MAX_VALUE);
+            buffer = source.buffer();
+            charset = Charset.forName("UTF-8");
+            if (responseBody.contentLength() != 0) {
+                return buffer.clone().readString(charset);
+            }
         } catch (IOException e) {
-           return "";
-        }
-        Buffer buffer = source.buffer();
-        Charset charset = Charset.forName("UTF-8");
-        if (responseBody.contentLength() != 0) {
-            return buffer.clone().readString(charset);
+            throw new RuntimeException(e);
         }
         return "";
     }

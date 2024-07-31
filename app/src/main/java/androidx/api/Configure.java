@@ -133,7 +133,7 @@ public class Configure {
     /**
      * 拦截器缓存
      */
-    private boolean interceptorCache = true;
+    private boolean interceptorCache = false;
     /**
      * 拦截器缓存个数
      */
