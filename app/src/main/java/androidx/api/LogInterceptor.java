@@ -91,6 +91,7 @@ public class LogInterceptor implements Interceptor {
             sb.append(ApiLog.BOTTOM_LINE).append(ApiLog.NEW_LINE);
             if (Configure.Config().isDebug()) {
                 ApiLog.i(TAG, sb.toString());
+                sb.setLength(0);
             }
             if (interceptorCaches != null) {
                 int size = interceptorCaches.size();

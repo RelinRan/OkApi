@@ -269,7 +269,9 @@ public final class OkApi implements Api {
                 buffer.deleteCharAt(buffer.lastIndexOf("&"));
             }
         }
-        return buffer.toString();
+        String paramsUrl = buffer.toString();
+       buffer.setLength(0);
+        return paramsUrl;
     }
 
     /**
