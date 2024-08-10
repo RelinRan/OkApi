@@ -65,7 +65,7 @@ public class Response {
     private JSON json;
 
     public Response() {
-        json = new JSON();
+
     }
 
     /**
