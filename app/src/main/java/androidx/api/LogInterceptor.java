@@ -24,6 +24,7 @@ public class LogInterceptor implements Interceptor {
     private StringBuffer sb;
     private Charset charset;
     private Buffer buffer;
+    private StringBuffer stringBuffer;
     private List<InterceptorCache> interceptorCaches;
 
     /**
@@ -53,6 +54,15 @@ public class LogInterceptor implements Interceptor {
         buffer = null;
     }
 
+    private StringBuffer getStringBuffer(){
+        if (stringBuffer==null){
+            stringBuffer = new StringBuffer();
+        }else{
+            stringBuffer.setLength(0);
+        }
+        return stringBuffer;
+    }
+
     @Override
     public okhttp3.Response intercept(Chain chain) throws IOException {
         okhttp3.Request request = buildRequest(chain);
@@ -62,7 +72,7 @@ public class LogInterceptor implements Interceptor {
         okhttp3.Response response = chain.proceed(request);
         if (Configure.Config().isInterceptorCache() || Configure.Config().isDebug()) {
             InterceptorCache logCache = new InterceptorCache();
-            sb = new StringBuffer();
+            sb = getStringBuffer();
             sb.append(ApiLog.NEW_LINE);
             sb.append(ApiLog.HEAD_LINE).append(ApiLog.NEW_LINE);
             sb.append(ApiLog.LEFT_LINE + url).append(ApiLog.NEW_LINE);

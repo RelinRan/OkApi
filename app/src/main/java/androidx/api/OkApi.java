@@ -60,6 +60,7 @@ public final class OkApi implements Api {
     private ApiMessenger messenger;
 
     private List<Call> runningCalls;
+    private StringBuffer stringBuffer;
 
     public OkApi() {
         runningCalls = new ArrayList();
@@ -112,7 +113,6 @@ public final class OkApi implements Api {
             }
         }
     }
-
 
 
     public List<Call> getRunningCalls() {
@@ -245,6 +245,20 @@ public final class OkApi implements Api {
     }
 
     /**
+     * 获取字符缓存
+     *
+     * @return
+     */
+    public StringBuffer getStringBuffer() {
+        if (stringBuffer == null) {
+            stringBuffer = new StringBuffer();
+        } else {
+            stringBuffer.setLength(0);
+        }
+        return stringBuffer;
+    }
+
+    /**
      * 获取带有参数的完整路径
      *
      * @param path   路径
@@ -252,7 +266,7 @@ public final class OkApi implements Api {
      * @return
      */
     protected String getParamsUrl(String path, RequestParams params) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuffer buffer = getStringBuffer();
         String url = getUrl(path);
         buffer.append(url);
         if (params != null && params.data() != null) {
@@ -270,7 +284,7 @@ public final class OkApi implements Api {
             }
         }
         String paramsUrl = buffer.toString();
-       buffer.setLength(0);
+        buffer.setLength(0);
         return paramsUrl;
     }
 

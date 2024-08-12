@@ -113,6 +113,8 @@ public class Response {
         } catch (Exception e) {
             object = null;
             return false;
+        }finally {
+            object = null;
         }
     }
 
@@ -130,6 +132,8 @@ public class Response {
         } catch (Exception e) {
             array = null;
             return false;
+        }finally {
+            array = null;
         }
     }
 
