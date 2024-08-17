@@ -19,6 +19,8 @@ public class ApiMessenger extends Handler {
     public static final int FAILED = 500;
     public static final int PROGRESS = 600;
     public static final String TAG = ApiMessenger.class.getSimpleName();
+    private ResponseBody responseBody;
+    private  Response response;
 
     public ApiMessenger() {
     }
@@ -36,7 +38,11 @@ public class ApiMessenger extends Handler {
      * @return
      */
     private ResponseBody createResponseBody(okhttp3.Call call, okhttp3.Response result, Exception exception) {
-        ResponseBody responseBody = new ResponseBody();
+        if (responseBody==null){
+            responseBody = new ResponseBody();
+        }else{
+            responseBody.release();
+        }
         //请求参数
         Request request = new Request();
         request.call(call);
@@ -48,7 +54,11 @@ public class ApiMessenger extends Handler {
         //异常
         responseBody.setException(exception);
         //响应内容
-        Response response = new Response();
+        if (response==null){
+            response = new Response();
+        }else{
+            response.close();
+        }
         if (result != null) {
             response.call(call);
             response.code(result.code());
@@ -98,7 +108,11 @@ public class ApiMessenger extends Handler {
     public void send(int what, long contentLength, long progress, OnBufferedSinkListener listener) {
         Message message = obtainMessage();
         message.what = what;
-        ResponseBody responseBody = new ResponseBody();
+        if (responseBody==null){
+            responseBody = new ResponseBody();
+        }else{
+            responseBody.release();
+        }
         responseBody.setBufferedSinkListener(listener);
         message.obj = responseBody;
         Bundle bundle = new Bundle();

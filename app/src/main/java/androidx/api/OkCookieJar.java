@@ -29,7 +29,7 @@ public class OkCookieJar implements Serializable, CookieJar {
 
     public OkCookieJar(Context context) {
         this.context = context;
-        json = new JSON();
+        json = JSON.acquire();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
@@ -167,7 +167,7 @@ public class OkCookieJar implements Serializable, CookieJar {
      */
     public static List<Cookie> getCookies(Context context, String host, int port) {
         String cookieJson = getCache(context, PREFIX + host + ":" + port, "[]");
-        List<OkCookie> okCookies = new JSON().toList(cookieJson, OkCookie.class);
+        List<OkCookie> okCookies = JSON.acquire().toList(cookieJson, OkCookie.class);
         List<Cookie> cookies = new ArrayList<>();
         int okCookiesSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookiesSize; i++) {

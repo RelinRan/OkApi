@@ -28,6 +28,30 @@ import java.util.Vector;
  */
 public class JSON {
 
+    private static JSON instance;
+
+    private JSON() {
+
+    }
+
+    public static JSON acquire() {
+        if (instance == null) {
+            synchronized (JSON.class) {
+                if (instance == null) {
+                    instance = new JSON();
+                }
+            }
+        }
+        return instance;
+    }
+
+    /**
+     * 销毁对象
+     */
+    public void destroy(){
+        instance = null;
+    }
+
     /**
      * 调试模式
      */
