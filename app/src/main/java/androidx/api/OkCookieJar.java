@@ -166,9 +166,12 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @return
      */
     public static List<Cookie> getCookies(Context context, String host, int port) {
+        List<Cookie> cookies = new ArrayList<>();
+        if (context == null) {
+            return cookies;
+        }
         String cookieJson = getCache(context, PREFIX + host + ":" + port, "[]");
         List<OkCookie> okCookies = JSON.acquire().toList(cookieJson, OkCookie.class);
-        List<Cookie> cookies = new ArrayList<>();
         int okCookiesSize = okCookies == null ? 0 : okCookies.size();
         for (int i = 0; i < okCookiesSize; i++) {
             OkCookie okCookie = okCookies.get(i);
@@ -200,6 +203,9 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @param host    服务器
      */
     public static void remove(Context context, String host, int port) {
+        if (context == null) {
+            return;
+        }
         setCache(context, PREFIX + host + ":" + port, "[]");
     }
 
@@ -209,6 +215,9 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @param context 上下文
      */
     public static void clear(Context context) {
+        if (context == null) {
+            return;
+        }
         getSharedPreferences(context).edit().clear().commit();
     }
 
@@ -234,11 +243,13 @@ public class OkCookieJar implements Serializable, CookieJar {
     public static int getVersionCode(Context context) {
         int versionCode = 1;
         try {
-            PackageManager pm = context.getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
-            versionCode = pi.versionCode;
+            if (context != null) {
+                PackageManager pm = context.getPackageManager();
+                PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+                versionCode = pi.versionCode;
+            }
         } catch (Exception e) {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
         return versionCode;
     }
@@ -252,6 +263,9 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @return
      */
     protected static String getCache(Context context, String key, String defValue) {
+        if (context == null || key == null) {
+            return defValue;
+        }
         return getSharedPreferences(context).getString(key, defValue);
     }
 
@@ -263,6 +277,9 @@ public class OkCookieJar implements Serializable, CookieJar {
      * @param value   值
      */
     protected static void setCache(Context context, String key, String value) {
+        if (context == null || key == null) {
+            return;
+        }
         getSharedPreferences(context).edit().putString(key, value).apply();
     }
 
