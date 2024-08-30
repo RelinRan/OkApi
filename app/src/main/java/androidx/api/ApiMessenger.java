@@ -20,7 +20,7 @@ public class ApiMessenger extends Handler {
     public static final int PROGRESS = 600;
     public static final String TAG = ApiMessenger.class.getSimpleName();
     private ResponseBody responseBody;
-    private  Response response;
+    private Response response;
 
     public ApiMessenger() {
     }
@@ -38,9 +38,9 @@ public class ApiMessenger extends Handler {
      * @return
      */
     private ResponseBody createResponseBody(okhttp3.Call call, okhttp3.Response result, Exception exception) {
-        if (responseBody==null){
+        if (responseBody == null) {
             responseBody = new ResponseBody();
-        }else{
+        } else {
             responseBody.release();
         }
         //请求参数
@@ -54,9 +54,9 @@ public class ApiMessenger extends Handler {
         //异常
         responseBody.setException(exception);
         //响应内容
-        if (response==null){
+        if (response == null) {
             response = new Response();
-        }else{
+        } else {
             response.close();
         }
         if (result != null) {
@@ -66,14 +66,14 @@ public class ApiMessenger extends Handler {
             response.message(result.message());
             response.protocol(result.protocol());
             response.request(result.request());
-            byte[] bytes = new byte[0];
+            byte[] bytes = null;
             try {
                 bytes = result.body().bytes();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             response.bytes(bytes);
-            response.body(new String(bytes, Charset.forName("UTF-8")));
+            response.body(bytes == null ? null : new String(bytes, Charset.forName("UTF-8")));
         }
         responseBody.setResponse(response);
         return responseBody;
@@ -108,9 +108,9 @@ public class ApiMessenger extends Handler {
     public void send(int what, long contentLength, long progress, OnBufferedSinkListener listener) {
         Message message = obtainMessage();
         message.what = what;
-        if (responseBody==null){
+        if (responseBody == null) {
             responseBody = new ResponseBody();
-        }else{
+        } else {
             responseBody.release();
         }
         responseBody.setBufferedSinkListener(listener);

@@ -241,7 +241,14 @@ public final class OkApi implements Api {
      */
     protected String getUrl(String path) {
         String address = Configure.Config().address();
-        return path.toLowerCase().startsWith("http") ? path : address + path;
+        StringBuilder builder = new StringBuilder();
+        if (path.toLowerCase().startsWith("http")) {
+            builder.append(path);
+        } else {
+            builder.append(address);
+            builder.append(path);
+        }
+        return builder.toString();
     }
 
     /**

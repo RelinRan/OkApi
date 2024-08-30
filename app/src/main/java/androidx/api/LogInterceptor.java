@@ -26,6 +26,7 @@ public class LogInterceptor implements Interceptor {
     private Buffer buffer;
     private StringBuffer stringBuffer;
     private List<InterceptorCache> interceptorCaches;
+    private HttpUrl domainUrl;
 
     /**
      * @return 缓存日志
@@ -126,7 +127,7 @@ public class LogInterceptor implements Interceptor {
         String domain = request.header(Api.DOMAIN);
         if (domain != null && domain.length() > 0) {
             //替换服务器
-            HttpUrl domainUrl = HttpUrl.parse(domain);
+            domainUrl = HttpUrl.parse(domain);
             HttpUrl newUrl = httpUrl.newBuilder().scheme(domainUrl.scheme()).host(domainUrl.host()).port(domainUrl.port()).build();
             //构建新的请求方式
             okhttp3.Request.Builder builder = request.newBuilder();

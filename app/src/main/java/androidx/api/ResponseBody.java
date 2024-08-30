@@ -111,7 +111,13 @@ public class ResponseBody {
      * 资源释放
      */
     public void release() {
+        if (request != null) {
+            request.cancel();
+        }
         request = null;
+        if (response != null) {
+            response.close();
+        }
         response = null;
         exception = null;
         onRequestListener = null;
