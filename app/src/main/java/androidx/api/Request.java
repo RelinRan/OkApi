@@ -77,6 +77,9 @@ public class Request {
         if (call == null) {
             return "";
         }
+        if (call.request()==null){
+            return "";
+        }
         if (call.request().tag() == null) {
             return "";
         }
