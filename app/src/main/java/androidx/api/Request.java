@@ -74,16 +74,17 @@ public class Request {
     }
 
     public String tag() {
-        if (call == null) {
-            return "";
+        String tag = "";
+        if (call != null) {
+            okhttp3.Request request = call.request();
+            if (request != null) {
+                Object object = request.tag();
+                if (object != null) {
+                    tag = (String) object;
+                }
+            }
         }
-        if (call.request()==null){
-            return "";
-        }
-        if (call.request().tag() == null) {
-            return "";
-        }
-        return (String) call.request().tag();
+        return tag == null ? "" : tag;
     }
 
     public RequestBody body() {
@@ -100,7 +101,7 @@ public class Request {
         try {
             requestBody.writeTo(buffer);
         } catch (IOException e) {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
         Charset charset = StandardCharsets.UTF_8;
         MediaType contentType = requestBody.contentType();
